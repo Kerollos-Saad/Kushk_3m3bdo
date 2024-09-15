@@ -37,6 +37,9 @@ namespace Kushl_3m3bdo
 			builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+			// Register Generic Repository
+			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
