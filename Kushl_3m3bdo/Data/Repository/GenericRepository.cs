@@ -7,38 +7,40 @@ namespace Kushl_3m3bdo.Data.Repository
 {
 	public class GenericRepository<T> : IGenericRepository<T> where T : class
 	{
-		protected readonly ApplicationDbContext _context;
+		private readonly ApplicationDbContext _context;
+		internal DbSet<T> DbSet;
 
 		public GenericRepository(ApplicationDbContext context)
 		{
 			this._context = context;
+			this.DbSet = _context.Set<T>();
 		}
 
 		public T GetById(int id)
 		{
-			return _context.Set<T>().Find(id);
+			return DbSet.Find(id);
 		}
 
 		public async Task<T> GetByIdAsync(int id)
 		{
-			return await _context.Set<T>().FindAsync(id);
+			return await DbSet.FindAsync(id);
 		}
 
 		public IEnumerable<T> GetAll()
 		{
-			return _context.Set<T>().ToList();
+			return DbSet.ToList();
 		}
 
 		public async Task<IEnumerable<T>> GetAllAsync()
 		{
-			return await _context.Set<T>().ToListAsync();
+			return await DbSet.ToListAsync();
 		}
 
 		public T FindExpression(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			IQueryable<T> query = _context.Set<T>();
+			IQueryable<T> query = DbSet;
 
-			if(includeProperties != null)
+			if (includeProperties != null)
 				foreach (var property in includeProperties)
 					query = query.Include(property);
 			
@@ -47,12 +49,12 @@ namespace Kushl_3m3bdo.Data.Repository
 
 		public async Task<T> FindExpressionAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			return await _context.Set<T>().SingleOrDefaultAsync(Filter);
+			return await DbSet.SingleOrDefaultAsync(Filter);
 		}
 
 		public IEnumerable<T> FindAllExpression(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			IQueryable<T> query = _context.Set<T>();
+			IQueryable<T> query = DbSet;
 
 			if (includeProperties != null)
 				foreach (var property in includeProperties)
@@ -63,24 +65,24 @@ namespace Kushl_3m3bdo.Data.Repository
 
 		public async Task<IEnumerable<T>> FindAllExpressionAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			return await _context.Set<T>().Where(Filter).ToListAsync();
+			return await DbSet.Where(Filter).ToListAsync();
 		}
 
 		public IEnumerable<T> FindAllExpression(Expression<Func<T, bool>> Filter, int skip, int take)
 		{
-			return _context.Set<T>().Where(Filter).Skip(skip).Take(take).ToList();
+			return DbSet.Where(Filter).Skip(skip).Take(take).ToList();
 		}
 
 		public async Task<IEnumerable<T>> FindAllExpressionAsync(Expression<Func<T, bool>> Filter, int skip, int take)
 		{
-			return await _context.Set<T>().Where(Filter).Skip(skip).Take(take).ToListAsync();
+			return await DbSet.Where(Filter).Skip(skip).Take(take).ToListAsync();
 		}
 
 		public IEnumerable<T> FindAll(Expression<Func<T, bool>>? Filter, int? skip, int? take,
 			string[] includeProperties = null,
 			Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
 		{
-			IQueryable<T> query = _context.Set<T>();
+			IQueryable<T> query = DbSet;
 
 			if (includeProperties != null)
 				foreach (var property in includeProperties)
@@ -109,7 +111,7 @@ namespace Kushl_3m3bdo.Data.Repository
 		public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> Filter, int? skip, int? take, string[] includeProperties = null,
 			Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
 		{
-			IQueryable<T> query = _context.Set<T>();
+			IQueryable<T> query = DbSet;
 
 			if (includeProperties != null)
 				foreach (var property in includeProperties)
