@@ -1,0 +1,56 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add Category</h1>
+
+<form method="post" enctype="multipart/form-data">
+	<div class="card mt-4">
+		<div class="card-header">
+			Add Category
+		</div>
+		<div class="card-body">
+			
+
+			<input asp-for="Name" class="form-control mb-3" placeholder="Category name..." />
+			<span asp-validation-for="Name"></span>
+			
+			<div asp-validation-summary="All" class="text-danger"></div>
+
+			<div class="col-md-6">
+				<div class="form-group">
+					
+					@* <label asp-for="@Model.Logo" class="form-label"></label> *@
+					
+					@{
+						string CateogryImg = @Model.Logo != null 
+							? $"data:image/*;base64,{Convert.ToBase64String(@Model.Logo)}"
+							: Url.Content("~/images/Default_img.png");
+					}
+					
+					<img id="ProfilePicture" alt="profile" src=@CateogryImg class="img-fluid catlogo rounded" />
+
+					<div class="container py-3">
+						<input type="file"
+						       class="form-control"
+						       accept="image/*"
+						       asp-for="@Model.Logo"
+						       onchange="document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0])" />
+						<span asp-validation-for="@Model.Logo" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="card-footer">
+			<button type="submit" class="btn btn-primary">Save</button>
+			<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+		</div>
+	</div>
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

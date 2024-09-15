@@ -1,0 +1,179 @@
+﻿@model Product
+
+@{
+	ViewData["Title"] = "Update";
+	SelectList CategoryDict = new SelectList(ViewBag.CategoryList, "Id", "Name");
+}
+
+<h1>Update Product</h1>
+
+<form method="post" enctype="multipart/form-data">
+	
+	<input asp-for="Id" hidden/>
+
+	<div class="card shadow border-0 mt-4">
+
+		<div class="card-header bg-secondary bg-gradient text-light py-4">
+			<div class="row">
+				<div class="col-12 text-center">
+					<h3 class="text-white text-uppercase">Update Product</h3>
+					<p class="text-white-50 fw-semibold mb-0">by @User.Identity.Name</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="card-body">
+			<div class="py-3">
+
+				<div asp-validation-summary="All" class="text-danger"></div>
+
+				<div class="row">
+
+					<div class="col-12 col-lg-4 offset-lg-1 text-center mb-3">
+
+						@{
+							string ProductimageSrc = @Model.ProductImg != null
+								? $"data:image/*;base64,{Convert.ToBase64String(@Model.ProductImg)}"
+								: Url.Content("~/images/Default_img.png");
+						}
+						<img id="ProfilePicture" alt="profile" src=@ProductimageSrc width="100%" class="img-fluid catlogo rounded margin-img" />
+
+						<div class="container py-3">
+							<input type="file"
+							       class="form-control"
+							       accept="image/*"
+							       asp-for="@Model.ProductImg"
+							       onchange="document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0])"/>
+							<span asp-validation-for="@Model.ProductImg" class="text-danger"></span>
+						</div>
+
+					</div>
+
+					<div class="col-12 col-lg-6 offset-lg-1">
+
+						<div class="form-floating mb-3">
+							<input asp-for="Name" type="text" class="form-control" placeholder=" "/>
+							<label asp-for="Name">Product Name</label>
+							<span asp-validation-for="Name" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<textarea asp-for="Description" class="form-control" placeholder=""
+									  spellcheck="false" style="height: auto;"></textarea>
+							<label asp-for="Description">Description</label>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="Price" type="number" class="form-control" placeholder=""/>
+							<label asp-for="Price">Price</label>
+							<span asp-validation-for="Price" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="Discount" type="number" class="form-control" placeholder=""/>
+							<label asp-for="Discount">Discount</label>
+							<span asp-validation-for="Discount" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="UPCNumber" type="number" class="form-control" placeholder=""/>
+							<label asp-for="UPCNumber">UPC Number</label>
+							<span asp-validation-for="UPCNumber" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="Company" type="text" class="form-control" placeholder=""/>
+							<label asp-for="Company">Company Name</label>
+							<span asp-validation-for="Company" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="Country" type="text" class="form-control" placeholder=""/>
+							<label asp-for="Country">Country Name</label>
+							<span asp-validation-for="Country" class="text-danger"></span>
+						</div>
+
+						<div class="form-floating mb-3">
+							<select asp-for="CategoryId" asp-items="@CategoryDict" class="form-check form-control">
+								<option value="" selected disabled>Select Category</option>
+							</select>
+							<label asp-for="CategoryId">Category</label>
+							<span asp-validation-for="CategoryId" class="text-danger"></span>
+						</div>
+
+						<div class="row text-center offset-2">
+							<div class="p-1 col-3 col-lg-3 bg-white border-bottom">
+								<div class="text-dark text-opacity-50 fw-semibold">Price</div>
+							</div>
+							<div class="p-1 col-3 col-lg-3 bg-white border-bottom">
+								<div class="text-dark text-opacity-50 fw-semibold">Discount</div>
+							</div>
+							<div class="p-1 col-3 col-lg-3 bg-white border-bottom">
+								<div class="text-dark text-opacity-50 fw-semibold">Final Price</div>
+							</div>
+						</div>
+
+						<div class="row text-center offset-2">
+							<div class="p-1 col-3 col-lg-3 bg-white text-warning fw-bold">
+								<div id="PriceDisplay">@Model.Price</div>
+							</div>
+							<div class="p-1 col-3 col-lg-3 bg-white text-warning fw-bold">
+								<div id="DiscountDisplay">@Model.Discount %</div>
+							</div>
+							<div class="p-1 col-3 col-lg-3 bg-white text-warning fw-bold">
+								<div id="FinalPriceDisplay">@(Model.Price * (1 - Model.Discount / 100))</div>
+							</div>
+						</div>
+
+					</div>
+
+
+
+				</div>
+
+				<div class="row">
+					<div class="col-12 col-md-6 offset-lg-3 mt-3">
+						<button type="submit"
+								class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
+							Update
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="card-footer">
+			<a asp-action="Index" class="btn btn-secondary py-2">Back To Home</a>
+		</div>
+
+	</div>
+
+
+
+</form>
+
+@section Scripts {
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+
+			const priceInput = document.getElementById('Price');
+			const discountInput = document.getElementById('Discount');
+			const priceDisplay = document.getElementById('PriceDisplay');
+			const discountDisplay = document.getElementById('DiscountDisplay');
+			const finalPriceDisplay = document.getElementById('FinalPriceDisplay');
+
+			function calculateFinalPrice() {
+				const price = parseFloat(priceInput.value) || 0;
+				const discount = parseFloat(discountInput.value) || 0;
+				const finalPrice = price * (1 - discount / 100);
+
+				priceDisplay.textContent = price.toFixed(2);
+				discountDisplay.textContent = discount.toFixed(2) + " %";
+				finalPriceDisplay.textContent = finalPrice.toFixed(2);
+			}
+
+			priceInput.addEventListener("input", calculateFinalPrice);
+			discountInput.addEventListener("input", calculateFinalPrice);
+
+			updateFinalPrice();
+		});
+	</script>
+
+	<partial name="_ValidationScriptsPartial" />
+}
