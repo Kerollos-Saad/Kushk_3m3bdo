@@ -12,20 +12,18 @@ namespace Kushl_3m3bdo.Controllers
 	public class CategoriesController : Controller
 	{
 
-		private readonly ICategoryRepository _categoryRepository;
-		private readonly IProductRepository _productRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public CategoriesController(ICategoryRepository categoryRepository, IProductRepository productRepository)
+		public CategoriesController(IUnitOfWork unitOfWork)
 		{
-			this._categoryRepository = categoryRepository;
-			this._productRepository = productRepository;
+			this._unitOfWork = unitOfWork;
 		}
 
 		public async Task<Dictionary<int, int>> CreateProductCategoryDict()
 		{
 			Dictionary<int, int> ProductNumPerCategory = new Dictionary<int, int>();
 
-			var Products = await _productRepository.GetAll();
+			var Products = await _unitOfWork.Products.GetAllAsync();
 			foreach (Product product in Products)
 			{
 				if (ProductNumPerCategory.ContainsKey((int)product.CategoryId))
@@ -42,7 +40,7 @@ namespace Kushl_3m3bdo.Controllers
 		{
 			ViewData["ProductsPerCategory"] = await CreateProductCategoryDict();
 
-			var categories = await _categoryRepository.GetAll();
+			var categories = await _unitOfWork.Categories.GetAllAsync();
 			return View(categories);
 		}
 
@@ -57,7 +55,7 @@ namespace Kushl_3m3bdo.Controllers
 		public async Task<IActionResult> Add(Category newCategory)
 		{
 
-			bool UniqueName = await _categoryRepository.CheckUniqueCategoryByName(newCategory.Name);
+			bool UniqueName = await _unitOfWork.Categories.CheckUniqueCategoryByName(newCategory.Name);
 
 			if (!UniqueName)
 			{
@@ -76,7 +74,7 @@ namespace Kushl_3m3bdo.Controllers
 				}
 			}
 
-			await _categoryRepository.Insert(newCategory);
+			await _unitOfWork.Categories.AddAsync(newCategory);
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -84,7 +82,7 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Remove(int categoryId)
 		{
-			await _categoryRepository.Delete(categoryId);
+			await _unitOfWork.Categories.RemoveWithIdAsync(categoryId);
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -92,7 +90,7 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Update(int categoryId)
 		{
-			var TargetCategory = await _categoryRepository.GetById(categoryId);
+			var TargetCategory = await _unitOfWork.Categories.GetByIdAsync(categoryId);
 			return View(TargetCategory);
 		}
 
@@ -103,7 +101,7 @@ namespace Kushl_3m3bdo.Controllers
 			if (!ModelState.IsValid)
 				return View(newCategory);
 
-			var oldCategory = await _categoryRepository.GetById(newCategory.Id);
+			var oldCategory = await _unitOfWork.Categories.GetByIdAsync(newCategory.Id);
 			if (oldCategory == null)
 			{
 				ModelState.AddModelError("NotFound", "Category not found.");
@@ -132,7 +130,7 @@ namespace Kushl_3m3bdo.Controllers
 
 			if (oldCategory.Name != newCategory.Name)
 			{
-				bool UniqueName = await _categoryRepository.CheckUniqueCategoryByName(newCategory.Name);
+				bool UniqueName = await _unitOfWork.Categories.CheckUniqueCategoryByName(newCategory.Name);
 
 				if (!UniqueName)
 				{
@@ -141,7 +139,7 @@ namespace Kushl_3m3bdo.Controllers
 				}
 			}
 
-			await _categoryRepository.Update(newCategory);
+			await _unitOfWork.Categories.Update(newCategory);
 			return RedirectToAction(nameof(Index));
 		}
 	}

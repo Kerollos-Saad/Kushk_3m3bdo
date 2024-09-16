@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kushl_3m3bdo.Data.Repository
 {
-	public class ProductRepository : IProductRepository
+	public class ProductRepository : GenericRepository<Product>, IProductRepository
 	{
 		private readonly ApplicationDbContext _context;
-		public ProductRepository(ApplicationDbContext context)
+
+		public ProductRepository(ApplicationDbContext context) : base(context)
 		{
 			this._context = context;
 		}

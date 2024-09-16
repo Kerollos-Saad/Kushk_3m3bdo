@@ -7,21 +7,19 @@ namespace Kushl_3m3bdo.Data.Repository
 	{
 		private readonly ApplicationDbContext _context;
 
-		public IGenericRepository<ApplicationUser> Users { get; private set; }
-		public IGenericRepository<Category> Categories { get; private set; }
-		public IGenericRepository<Product> Products { get; private set; }
-		public IGenericRepository<UserPurchase> Purchases { get; private set; }
-		public IGenericRepository<Wallet> Wallets { get; private set; }
+		public ICategoryRepository Categories { get; private set; }
+		public IProductRepository Products { get; private set; }
+		public IUserPurchaseRepository Purchases { get; private set; }
+		public IWalletRepository Wallets { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context)
 		{
 			this._context = context;
 
-			Users = new GenericRepository<ApplicationUser>(_context);
-			Categories = new GenericRepository<Category>(_context);
-			Products = new GenericRepository<Product>(_context);
-			Purchases = new GenericRepository<UserPurchase>(_context);
-			Wallets = new GenericRepository<Wallet>(_context);
+			Categories = new CategoryRepository(_context);
+			Products = new ProductRepository(_context);
+			Purchases = new UserPurchaseRepository(_context);
+			Wallets = new WalletRepository(_context);
 		}
 
 		public void Save()

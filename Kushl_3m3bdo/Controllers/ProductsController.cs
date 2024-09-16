@@ -9,18 +9,18 @@ namespace Kushl_3m3bdo.Controllers
 	public class ProductsController : Controller
 	{
 		private readonly IProductRepository _productRepository;
-		private readonly ICategoryRepository _categoryRepository;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+		public ProductsController(IProductRepository productRepository, IUnitOfWork unitOfWork)
 		{
 			this._productRepository = productRepository;
-			this._categoryRepository = categoryRepository;
+			this._unitOfWork = unitOfWork;
 		}
 
 		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Index(string searchString)
 		{
-            ViewData["CategoryList"] = await _categoryRepository.GetAll();
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
             var products = await _productRepository.GetAll();
 
@@ -34,7 +34,7 @@ namespace Kushl_3m3bdo.Controllers
 		[Authorize(Roles = "Admin,SubAdmin,Manager")]
         public async Task<IActionResult> Add()
         {
-	        ViewData["CategoryList"] = await _categoryRepository.GetAll();
+	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			return View(new Product());
         }
@@ -44,7 +44,7 @@ namespace Kushl_3m3bdo.Controllers
 		[ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Product newProduct)
         {
-	        ViewData["CategoryList"] = await _categoryRepository.GetAll();
+	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			if (ModelState.IsValid)
 	        {
@@ -86,7 +86,7 @@ namespace Kushl_3m3bdo.Controllers
         {
 	        var targetProduct = await _productRepository.GetById(Id);
 
-			var Category = await _categoryRepository.GetByIdNullable(targetProduct.CategoryId);
+	        var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
 			ViewData["ProductCategory"] = Category.Name;
 
 			return View(targetProduct);
@@ -96,7 +96,7 @@ namespace Kushl_3m3bdo.Controllers
 		[Authorize(Roles = "Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Update(int ProductId)
 		{
-			ViewData["CategoryList"] = await _categoryRepository.GetAll();
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 			var targetProduct = await _productRepository.GetById(ProductId);
 			return View(targetProduct);
 		}
@@ -106,9 +106,9 @@ namespace Kushl_3m3bdo.Controllers
         [Authorize(Roles = "Admin,SubAdmin,Manager")]
         public async Task<IActionResult> Update(Product newProduct)
         {
-            ViewData["CategoryList"] = await _categoryRepository.GetAll();
+            ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
-            if (!ModelState.IsValid)
+			if (!ModelState.IsValid)
                 return View(newProduct);
 
             var oldProduct = await _productRepository.GetById(newProduct.Id);

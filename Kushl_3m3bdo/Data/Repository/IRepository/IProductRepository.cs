@@ -2,7 +2,7 @@
 
 namespace Kushl_3m3bdo.Data.Repository.IRepository
 {
-	public interface IProductRepository
+	public interface IProductRepository : IGenericRepository<Product>
 	{
 		Task<IEnumerable<Product>> GetAll();
 		Task<IEnumerable<Product>> GetByCategoryId(int categoryId);

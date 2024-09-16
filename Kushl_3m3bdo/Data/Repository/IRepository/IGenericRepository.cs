@@ -49,5 +49,9 @@ namespace Kushl_3m3bdo.Data.Repository.IRepository
 		IEnumerable<T> RemoveRange(IEnumerable<T> entities);
 
 		Task<IEnumerable<T>> RemoveRangeAsync(IEnumerable<T> entities);
+
+		T RemoveWithId(int Id);
+
+		Task<T> RemoveWithIdAsync(int Id);
 	}
 }

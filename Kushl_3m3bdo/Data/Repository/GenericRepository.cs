@@ -200,5 +200,25 @@ namespace Kushl_3m3bdo.Data.Repository
 
 			return entities;
 		}
+
+		public T RemoveWithId(int Id)
+		{
+			var entity = _context.Set<T>().Find(Id);
+
+			_context.Set<T>().Remove(entity);
+			_context.SaveChanges();
+
+			return entity;
+		}
+
+		public async Task<T> RemoveWithIdAsync(int Id)
+		{
+			var entity = await _context.Set<T>().FindAsync(Id);
+
+			_context.Set<T>().Remove(entity);
+			await _context.SaveChangesAsync();
+
+			return entity;
+		}
 	}
 }
