@@ -85,7 +85,8 @@ namespace Kushl_3m3bdo.Controllers
 			var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
 
 	        var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
-			ViewData["ProductCategory"] = Category.Name;
+	        
+	        ViewData["ProductCategory"] = Category.Name;
 
 			return View(targetProduct);
         }
@@ -152,6 +153,8 @@ namespace Kushl_3m3bdo.Controllers
             }
 
             await _unitOfWork.Products.Update(newProduct);
+            await _unitOfWork.SaveAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -29,8 +29,6 @@ namespace Kushl_3m3bdo.Data.Repository
 				oldProduct.CategoryId = newProduct.CategoryId;
 				oldProduct.ProductImg = newProduct.ProductImg;
 			}
-
-			await _context.SaveChangesAsync();
 		}
 	}
 }

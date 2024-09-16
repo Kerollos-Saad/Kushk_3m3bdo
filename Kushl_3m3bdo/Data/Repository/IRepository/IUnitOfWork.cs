@@ -10,7 +10,7 @@ namespace Kushl_3m3bdo.Data.Repository.IRepository
 		IWalletRepository Wallets { get; }
 
 		void Save();
-		void SaveAsync();
+		Task SaveAsync();
 
 	}
 }

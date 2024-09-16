@@ -31,7 +31,6 @@ namespace Kushl_3m3bdo.Data.Repository
 				oldCategory.Name = newCategory.Name;
 				oldCategory.Logo = newCategory.Logo;
 			}
-			await _context.SaveChangesAsync();
 		}
 	}
 }

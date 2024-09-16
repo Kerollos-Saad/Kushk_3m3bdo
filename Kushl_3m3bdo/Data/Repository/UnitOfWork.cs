@@ -27,9 +27,9 @@ namespace Kushl_3m3bdo.Data.Repository
 			_context.SaveChanges();
 		}
 
-		public void SaveAsync()
+		public async Task SaveAsync()
 		{
-			_context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
 		}
 
 		public void Dispose()
