@@ -40,6 +40,9 @@ namespace Kushl_3m3bdo
 			// Register Generic Repository
 			builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+			// Register Unit Of Work
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
