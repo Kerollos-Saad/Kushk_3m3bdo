@@ -2,13 +2,8 @@
 
 namespace Kushl_3m3bdo.Data.Repository.IRepository
 {
-	public interface IWalletRepository
+	public interface IWalletRepository : IGenericRepository<Wallet>
 	{
-		IEnumerable<Wallet> GetAll();
-		Wallet GetById(int id);
-
-		void Insert (Wallet wallet);
-		void Update (int Id, Wallet wallet);
-		void Delete (int Id);
+		Task Update (Wallet wallet);
 	}
 }

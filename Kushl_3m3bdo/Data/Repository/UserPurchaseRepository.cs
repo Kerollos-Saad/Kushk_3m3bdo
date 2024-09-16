@@ -1,51 +1,34 @@
 ﻿using Kushl_3m3bdo.Data.Repository.IRepository;
 using Kushl_3m3bdo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kushl_3m3bdo.Data.Repository
 {
-    public class UserPurchaseRepository : IUserPurchaseRepository
+    public class UserPurchaseRepository : GenericRepository<UserPurchase>, IUserPurchaseRepository
     {
 
 		private readonly ApplicationDbContext _context;
 
-		public UserPurchaseRepository(ApplicationDbContext context)
+		public UserPurchaseRepository(ApplicationDbContext context):base(context)
 		{
 			this._context = context;
 		}
 
-		public UserPurchase GetById(int Id)
-		{
-			return _context.UserPurchases.FirstOrDefault(p => p.Id == Id);
-		}
-
-		public IEnumerable<UserPurchase> GetByUserId(String Id)
+		public async Task<IEnumerable<UserPurchase>> GetByUserId(String Id)
 	    {
-		    return _context.UserPurchases.Where(p => p.ApplicationUserId == Id).ToList();
+		    return await _context.UserPurchases.Where(p => p.ApplicationUserId == Id).ToListAsync();
 	    }
 
-	    public void Insert(UserPurchase userPurchase)
-	    {
-		    _context.UserPurchases.Add(userPurchase);
-			_context.SaveChanges();
-	    }
 
-	    public void Update(int Id, UserPurchase newUserPurchase)
+	    public async Task Update(UserPurchase newUserPurchase)
 	    {
-		    UserPurchase oldUserPurchase = GetById(Id);
-		    if (oldUserPurchase != null)
+		    UserPurchase oldUserPurchase = await _context.UserPurchases.FirstOrDefaultAsync(p => p.Id == newUserPurchase.Id);
+			if (oldUserPurchase != null)
 		    {
 				oldUserPurchase.Quantity = newUserPurchase.Quantity;
 				oldUserPurchase.PurchaseTime = newUserPurchase.PurchaseTime;
 		    }
-			_context.SaveChanges();
 	    }
 
-	    public void Delete(int Id)
-	    {
-			UserPurchase oldUserPurchase = GetById(Id);
-
-			_context.UserPurchases.Remove(oldUserPurchase);
-			_context.SaveChanges();
-	    }
 	}
 }
