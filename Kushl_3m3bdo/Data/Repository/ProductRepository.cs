@@ -13,35 +13,9 @@ namespace Kushl_3m3bdo.Data.Repository
 			this._context = context;
 		}
 
-		public async Task<IEnumerable<Product>> GetAll()
-		{
-			return await _context.Products.ToListAsync();
-		}
-
-		public async Task<IEnumerable<Product>> GetByCategoryId(int categoryId)
-		{
-			return await _context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
-		}
-
-		public async Task<Product> GetById(int id)
-		{
-			return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-		}
-
-		public async Task<Product> GetByUPC(long? productUPC)
-		{
-			return await _context.Products.FirstOrDefaultAsync(p => p.UPCNumber == productUPC);
-		}
-
-		public async Task Insert(Product product)
-		{
-			await _context.Products.AddAsync(product);
-			await _context.SaveChangesAsync();
-		}
-
 		public async Task Update(Product newProduct)
 		{
-			Product oldProduct = await GetById(newProduct.Id);
+			Product oldProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == newProduct.Id);
 
 			if (oldProduct != null)
 			{
@@ -56,14 +30,6 @@ namespace Kushl_3m3bdo.Data.Repository
 				oldProduct.ProductImg = newProduct.ProductImg;
 			}
 
-			await _context.SaveChangesAsync();
-		}
-
-		public async Task Delete(int Id)
-		{
-			Product oldProduct = await GetById(Id);
-			
-			_context.Products.Remove(oldProduct);
 			await _context.SaveChangesAsync();
 		}
 	}

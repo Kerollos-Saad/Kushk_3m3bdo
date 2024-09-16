@@ -8,12 +8,10 @@ namespace Kushl_3m3bdo.Controllers
 {
 	public class ProductsController : Controller
 	{
-		private readonly IProductRepository _productRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
-		public ProductsController(IProductRepository productRepository, IUnitOfWork unitOfWork)
+		public ProductsController(IUnitOfWork unitOfWork)
 		{
-			this._productRepository = productRepository;
 			this._unitOfWork = unitOfWork;
 		}
 
@@ -22,7 +20,7 @@ namespace Kushl_3m3bdo.Controllers
 		{
 			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
-            var products = await _productRepository.GetAll();
+			var products = await _unitOfWork.Products.GetAllAsync();
 
             if (!String.IsNullOrEmpty(searchString))
 	            products = products.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
@@ -50,7 +48,8 @@ namespace Kushl_3m3bdo.Controllers
 	        {
 		        if (newProduct.UPCNumber != null)
 		        {
-			        var oldProduct = await _productRepository.GetByUPC(newProduct.UPCNumber);
+			        var oldProduct =
+				        await _unitOfWork.Products.FindExpressionAsync(p => p.UPCNumber == newProduct.UPCNumber);
 
 			        if (oldProduct != null)
 			        {
@@ -69,8 +68,7 @@ namespace Kushl_3m3bdo.Controllers
 			        }
 		        }
 
-		        await _productRepository.Insert(newProduct);
-
+		        await _unitOfWork.Products.AddAsync(newProduct);
 		        return RedirectToAction(nameof(Index));
 			}
 	        else
@@ -83,8 +81,8 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Details(int Id)
-        {
-	        var targetProduct = await _productRepository.GetById(Id);
+		{
+			var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
 
 	        var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
 			ViewData["ProductCategory"] = Category.Name;
@@ -97,7 +95,7 @@ namespace Kushl_3m3bdo.Controllers
 		public async Task<IActionResult> Update(int ProductId)
 		{
 			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
-			var targetProduct = await _productRepository.GetById(ProductId);
+			var targetProduct = await _unitOfWork.Products.GetByIdAsync(ProductId);
 			return View(targetProduct);
 		}
 
@@ -111,7 +109,7 @@ namespace Kushl_3m3bdo.Controllers
 			if (!ModelState.IsValid)
                 return View(newProduct);
 
-            var oldProduct = await _productRepository.GetById(newProduct.Id);
+            var oldProduct = await _unitOfWork.Products.GetByIdAsync(newProduct.Id);
 
             var image = Request.Form.Files.FirstOrDefault();
             if (image != null)
@@ -143,7 +141,9 @@ namespace Kushl_3m3bdo.Controllers
 
             if (oldProduct.UPCNumber != newProduct.UPCNumber)
             {
-                var uniqueUPC = await _productRepository.GetByUPC(newProduct.UPCNumber);
+	            var uniqueUPC =
+		            await _unitOfWork.Products.FindExpressionAsync(p => p.UPCNumber == newProduct.UPCNumber);
+
                 if (uniqueUPC != null)
                 {
                     ModelState.AddModelError("RedundantUPC", "UPC Number is Already Exist!");
@@ -151,23 +151,22 @@ namespace Kushl_3m3bdo.Controllers
                 }
             }
 
-            await _productRepository.Update(newProduct);
+            await _unitOfWork.Products.Update(newProduct);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public async Task<IActionResult> FilterByCategory(int categoryId)
         {
-
-			var TargetProducts = await _productRepository.GetByCategoryId(categoryId);
+			var TargetProducts = await _unitOfWork.Products.FindAllExpressionAsync(p => p.CategoryId == categoryId);
 			return View("Index",TargetProducts);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Remove(int ProductId)
-        {
-	        await _productRepository.Delete(ProductId);
+		{
+			await _unitOfWork.Products.RemoveWithIdAsync(ProductId);
 			return RedirectToAction(nameof(Index));
         }
 
