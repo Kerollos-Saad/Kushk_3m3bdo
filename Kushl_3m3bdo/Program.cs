@@ -2,8 +2,11 @@ using Kushl_3m3bdo.Data;
 using Kushl_3m3bdo.Data.Repository;
 using Kushl_3m3bdo.Data.Repository.IRepository;
 using Kushl_3m3bdo.Models;
+using Kushl_3m3bdo.Models.Consts;
+using Kushl_3m3bdo.Models.Payments;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Kushl_3m3bdo
 {
@@ -28,6 +31,12 @@ namespace Kushl_3m3bdo
 				.AddDefaultTokenProviders();
 
 			builder.Services.AddControllersWithViews();
+
+			// Subscribe Stripe Service By Keys
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
+			// Register StripePaymentService
+			builder.Services.AddScoped<IStripePaymentService, StripePaymentService>();
 
 			// Identity Injection
 			builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
@@ -56,6 +65,10 @@ namespace Kushl_3m3bdo
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
+			// Two way to Add Services to container
+            //StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<String>();
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

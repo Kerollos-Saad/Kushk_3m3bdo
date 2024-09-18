@@ -1,0 +1,69 @@
+﻿using System.Collections;
+using System.Security.Claims;
+using Kushl_3m3bdo.Data.Repository.IRepository;
+using Kushl_3m3bdo.Models;
+using Kushl_3m3bdo.Models.Payments;
+using Kushl_3m3bdo.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
+
+namespace Kushl_3m3bdo.Controllers
+{
+	public class PaymentsController : Controller
+	{
+        private readonly IApplicationUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IStripePaymentService _stripePaymentService;
+
+        public PaymentsController(IApplicationUserRepository applicationUserRepository, IUnitOfWork unitOfWork, IStripePaymentService stripePaymentService)
+        {
+            this._userRepository = applicationUserRepository;
+            this._unitOfWork = unitOfWork;
+            this._stripePaymentService = stripePaymentService;
+        }
+
+        public List<ChargeWalletPlan> fetchPlans()
+        {
+	        var paymentPlans = new List<ChargeWalletPlan>
+	        {
+		        new ChargeWalletPlan { Id = 1, Name = "Starter", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 100M, AdditionalCreditPercentage = 10.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{""}},
+		        new ChargeWalletPlan { Id = 2, Name = "Pro 3bdo", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 200M, AdditionalCreditPercentage = 20.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{"Get Notifications For Offers", "Free Support"}},
+		        new ChargeWalletPlan { Id = 3, Name = "Company", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 1000M, AdditionalCreditPercentage = 25.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{"Get Notifications For Offers", "Free Support", "Free Shipping"}}
+	        };
+            return paymentPlans;
+		}
+
+		public IActionResult Index()
+		{
+			return View();
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Plans()
+		{
+			var paymentPlans = fetchPlans();
+			return View(paymentPlans);
+		}
+
+        [HttpPost]
+        public async Task<IActionResult> PlanPayment(int PlanId)
+        {
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            ApplicationUser applicationUser = await _userRepository.GetById(userId);
+            var wallet = await _unitOfWork.Wallets.GetByIdAsync(applicationUser.WalletId.Value);
+
+            // Starting..
+
+            var paymentPlans = fetchPlans();
+            var userPlan = paymentPlans.Find(p => p.Id == PlanId);
+
+            var checkoutUrl = _stripePaymentService.CreatePlanCheckoutSession(userPlan);
+
+            return Redirect(checkoutUrl);
+        }
+	}
+}

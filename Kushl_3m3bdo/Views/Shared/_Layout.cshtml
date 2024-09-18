@@ -30,24 +30,44 @@
 	                    </li>
                         
 	                    <li class="nav-item">
-		                    <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
+		                    <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">
+			                    <i class="bi bi-shop"></i>
+			                    Products
+		                    </a>
 	                    </li>
 
 	                    @if (User.IsInRole("Manager"))
                         {
 	                        <li class="nav-item">
-		                        <a class="nav-link text-dark" asp-area="" asp-controller="ManagerRoles" asp-action="Index">Roles</a>
+		                        <a class="nav-link text-dark" asp-area="" asp-controller="ManagerRoles" asp-action="Index">
+			                        <i class="bi bi-toggles"></i>
+			                        Roles
+		                        </a>
 	                        </li>
                         }
                         @if(User.IsInRole("Manager")||User.IsInRole("Admin"))
                         {
 	                        <li class="nav-item">
-		                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+		                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">
+			                        <i class="bi bi-person"></i>
+			                        Users
+		                        </a>
 	                        </li>
 	                        <li class="nav-item">
-		                        <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+		                        <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">
+			                        <i class="bi bi-tags"></i>
+			                        Categories
+		                        </a>
 	                        </li>
                         }
+                        
+	                    <li class="nav-item">
+		                    <a class="nav-link text-dark" asp-area="" asp-controller="Wallets" asp-action="Index">
+			                    <i class="bi bi-wallet"></i>
+			                    My Wallet
+                            </a>
+	                    </li>
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
