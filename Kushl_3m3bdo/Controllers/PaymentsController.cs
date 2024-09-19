@@ -6,6 +6,7 @@ using Kushl_3m3bdo.Models.Payments;
 using Kushl_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stripe.Checkout;
 
 namespace Kushl_3m3bdo.Controllers
@@ -47,14 +48,50 @@ namespace Kushl_3m3bdo.Controllers
 		}
 
         [HttpPost]
-        public async Task<IActionResult> PlanPayment(int PlanId)
+        public async Task<IActionResult> CheckWalletPlanStatus()
         {
-
+            // Assuming you have a way to get the current user's Wallet, for example:
             var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             ApplicationUser applicationUser = await _userRepository.GetById(userId);
             var wallet = await _unitOfWork.Wallets.GetByIdAsync(applicationUser.WalletId.Value);
+
+            if (wallet == null)
+            {
+                return Json(new { hasActivePlan = false });
+            }
+
+            // Check if the wallet has an active plan
+            if (wallet.PlanSubscriptionStrated >  DateTime.UtcNow.AddMonths(1))
+            {
+                return Json(new { hasActivePlan = true, expiryDate = wallet.PlanSubscriptionStrated.AddMonths(1) });
+            }
+
+            return Json(new { hasActivePlan = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PlanPayment(int PlanId)
+        {
+	        var claimsIdentity = (ClaimsIdentity)User.Identity;
+	        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+	        ApplicationUser applicationUser = await _userRepository.GetById(userId);
+	        var wallet = await _unitOfWork.Wallets.GetByIdAsync(applicationUser.WalletId.Value);
+
+			// Check if User Bought a Plan This Month
+
+			if (wallet.IsSubscripeToPlan)
+			{
+				if (wallet.PlanSubscriptionStrated.AddMonths(1) > DateTime.UtcNow)
+				{
+					return PartialView("_HavePlanWarnningPartial", wallet);
+				}
+			}
+
+            // User Didn't Bought a Plan For Last Month
+
 
             // Starting..
 

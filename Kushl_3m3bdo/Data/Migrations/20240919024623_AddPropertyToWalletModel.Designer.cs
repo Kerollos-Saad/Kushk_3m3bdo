@@ -4,6 +4,7 @@ using Kushl_3m3bdo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kushl_3m3bdo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240919024623_AddPropertyToWalletModel")]
+    partial class AddPropertyToWalletModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,7 +123,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.Product", b =>
@@ -163,7 +166,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.UserPurchase", b =>
@@ -193,7 +196,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("UserPurchases", (string)null);
+                    b.ToTable("UserPurchases");
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.Wallet", b =>
@@ -230,7 +233,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Wallets", (string)null);
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
