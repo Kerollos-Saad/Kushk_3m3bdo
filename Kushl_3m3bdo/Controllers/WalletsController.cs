@@ -39,7 +39,7 @@ namespace Kushl_3m3bdo.Controllers
 
 					WalletId = targetWallet.Id,
 					Amount = targetWallet.Amount,
-					isDebts = targetWallet.isDebts
+					isDebts = targetWallet.IsDebts
 				};
 				return View(WalletVM);
 			}

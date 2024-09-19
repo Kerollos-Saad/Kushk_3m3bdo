@@ -57,8 +57,8 @@ namespace Kushl_3m3bdo.Controllers
 			var currentUser = await GetCurrentUser();
 			var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
 
-			ViewData["IsSubscribeToPlan"] = wallet.IsSubscripeToPlan;
-			ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStrated.AddMonths(1);
+			ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
+			ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
 
 			var paymentPlans = fetchPlans();
 			return View(paymentPlans);
@@ -77,9 +77,9 @@ namespace Kushl_3m3bdo.Controllers
             }
 
             // Check if the wallet has an active plan
-            if (wallet.PlanSubscriptionStrated >  DateTime.UtcNow.AddMonths(1))
+            if (wallet.PlanSubscriptionStartDate >  DateTime.UtcNow.AddMonths(1))
             {
-                return Json(new { hasActivePlan = true, expiryDate = wallet.PlanSubscriptionStrated.AddMonths(1) });
+                return Json(new { hasActivePlan = true, expiryDate = wallet.PlanSubscriptionStartDate.AddMonths(1) });
             }
 
             return Json(new { hasActivePlan = false });
@@ -96,11 +96,11 @@ namespace Kushl_3m3bdo.Controllers
 
 			// Check if User Bought a Plan This Month
 
-			if (wallet.IsSubscripeToPlan)
+			if (wallet.IsSubscribeToPlan)
 			{
-				if (wallet.PlanSubscriptionStrated.AddMonths(1) > DateTime.UtcNow)
+				if (wallet.PlanSubscriptionStartDate.AddMonths(1) > DateTime.UtcNow)
 				{
-					return PartialView("_HavePlanWarnningPartial", wallet);
+					return PartialView("_HavePlanWarningPartial", wallet);
 				}
 			}
 

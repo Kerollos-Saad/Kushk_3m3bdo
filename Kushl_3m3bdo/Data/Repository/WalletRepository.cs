@@ -19,7 +19,7 @@ namespace Kushl_3m3bdo.Data.Repository
 			if (oldWallet != null)
 			{
 				oldWallet.Amount = newWallet.Amount;
-				oldWallet.isDebts = newWallet.isDebts;
+				oldWallet.IsDebts = newWallet.IsDebts;
 				oldWallet.ApplicationUserId = newWallet.ApplicationUserId;
 			}
 		}
