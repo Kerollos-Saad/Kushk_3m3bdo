@@ -35,6 +35,17 @@ namespace Kushl_3m3bdo.Controllers
             return paymentPlans;
 		}
 
+        public async Task<ApplicationUser> GetCurrentUser()
+        {
+	        var claimsIdentity = (ClaimsIdentity)User.Identity;
+	        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+	        ApplicationUser applicationUser = await _userRepository.GetById(userId);
+
+            return applicationUser;
+		}
+            
+
 		public IActionResult Index()
 		{
 			return View();
@@ -43,6 +54,12 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Plans()
 		{
+			var currentUser = await GetCurrentUser();
+			var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+
+			ViewData["IsSubscribeToPlan"] = wallet.IsSubscripeToPlan;
+			ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStrated.AddMonths(1);
+
 			var paymentPlans = fetchPlans();
 			return View(paymentPlans);
 		}
@@ -50,12 +67,9 @@ namespace Kushl_3m3bdo.Controllers
         [HttpPost]
         public async Task<IActionResult> CheckWalletPlanStatus()
         {
-            // Assuming you have a way to get the current user's Wallet, for example:
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            ApplicationUser applicationUser = await _userRepository.GetById(userId);
-            var wallet = await _unitOfWork.Wallets.GetByIdAsync(applicationUser.WalletId.Value);
+			// Assuming you have a way to get the current user's Wallet, for example:
+			var currentUser = await GetCurrentUser();
+			var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
 
             if (wallet == null)
             {

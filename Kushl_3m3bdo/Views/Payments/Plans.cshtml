@@ -64,9 +64,9 @@
 							@* <a asp-controller="Payment" asp-action="PlanPayment" asp-route-PlanId="1" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
 							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
-								<input type="hidden" name="PlanId" value="1"/>
+								<input type="hidden" name="PlanId" value="@Model[0].Id" />
 								<div class="d-grid gap-2">
-									<button type="submit" class="btn btn-lg btn-outline-primary">Choose Plan</button>
+									<button type="submit" id="SubscriptionPlan-1" class="btn btn-lg btn-outline-primary">Choose Plan</button>
 								</div>
 							</form>
 
@@ -121,9 +121,9 @@
 							@* <a href="#!" class="btn btn-lg btn-primary">Choose Plan</a> *@
 
 							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
-								<input type="hidden" name="PlanId" value="2"/>
+								<input type="hidden" name="PlanId" value="@Model[1].Id" />
 								<div class="d-grid gap-2">
-									<button type="submit" class="btn btn-lg btn-primary">Choose Plan</button>
+									<button type="submit" id="SubscriptionPlan-2" class="btn btn-lg btn-primary">Choose Plan</button>
 								</div>
 							</form>
 
@@ -177,9 +177,9 @@
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
 							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
-								<input type="hidden" name="PlanId" value="3"/>
+								<input type="hidden" name="PlanId" value="@Model[2].Id"/>
 								<div class="d-grid gap-2">
-									<button type="submit" class="btn btn-lg btn-outline-primary">Choose Plan</button>
+									<button type="submit" id="SubscriptionPlan-3" class="btn btn-lg btn-outline-primary">Choose Plan</button>
 								</div>
 							</form>
 
@@ -194,11 +194,33 @@
 	
 	<div class="container mt-5">
 		<div class="d-grid gap-2 col-6 mx-auto">
-			<a href="#!" class="btn bsb-btn-xl btn-dark rounded-pill">Create Special Plan</a>
+			<a href="#!" id="SubscriptionPlan-X" class="btn bsb-btn-xl btn-dark rounded-pill">Create Special Plan</a>
 		</div>
 	</div>
 
 </section>
 
+
+
 <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/pricings/pricing-2/assets/css/pricing-2.css">
+
+@section Scripts
+{
+	<partial name="_ValidationScriptsPartial" />
+	<partial name="_HavePlanWarningPartial" />
+
+	@if (@ViewBag.IsSubscribeToPlan.Equals(true))
+	{
+		<script type="text/javascript">
+
+			$(document).on("click",
+				"[id^='SubscriptionPlan-']",
+				function(e) {
+					e.preventDefault();
+					$(".modal").modal('show');
+				});
+
+		</script>
+	}
+}
