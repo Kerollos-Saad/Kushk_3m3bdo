@@ -20,6 +20,17 @@ namespace Kushl_3m3bdo.Data.Repository
 			{
 				oldWallet.Amount = newWallet.Amount;
 				oldWallet.IsDebts = newWallet.IsDebts;
+				oldWallet.DebtRequest = newWallet.DebtRequest;
+				
+				oldWallet.SubscriptionPlanId = newWallet.SubscriptionPlanId;
+				oldWallet.IsSubscribeToPlan = newWallet.IsSubscribeToPlan;
+				oldWallet.NumberOfSubscriptionPlans = newWallet.NumberOfSubscriptionPlans;
+				oldWallet.PlanSubscriptionStartDate = newWallet.PlanSubscriptionStartDate;
+				oldWallet.WalletCreatedDate = newWallet.WalletCreatedDate;
+				oldWallet.NumberOfPurchases = newWallet.NumberOfPurchases;
+				oldWallet.PriceOfPurchases = newWallet.PriceOfPurchases;
+				oldWallet.Score = newWallet.Score;
+
 				oldWallet.ApplicationUserId = newWallet.ApplicationUserId;
 			}
 		}

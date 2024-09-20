@@ -24,6 +24,9 @@ namespace Kushl_3m3bdo.Controllers
 		{
 			var user = await _userManager.GetUserAsync(User);
 
+			if (user == null)
+				return RedirectToAction("Index","Users");
+
 			if (user.WalletId != null)
 			{
 				var targetWallet = await _unitOfWork.Wallets.GetByIdAsync(user.WalletId.Value);
@@ -31,15 +34,25 @@ namespace Kushl_3m3bdo.Controllers
 				var WalletVM = new WalletViewModel
 				{
 					UserId = user.Id,
-					UserName = user.UserName,
 					Email = user.Email,
 					FirstName = user.FirstName,
 					LastName = user.LastName,
+					UserName = user.UserName,
 					ProfilePicture = user.ProfilePic,
 
 					WalletId = targetWallet.Id,
 					Amount = targetWallet.Amount,
-					isDebts = targetWallet.IsDebts
+					IsDebts = targetWallet.IsDebts,
+					DebtRequest = targetWallet.DebtRequest,
+
+					SubscriptionPlanId = targetWallet.SubscriptionPlanId,
+					IsSubscribeToPlan = targetWallet.IsSubscribeToPlan,
+					NumberOfSubscriptionPlans = targetWallet.NumberOfSubscriptionPlans,
+					PlanSubscriptionStartDate = targetWallet.PlanSubscriptionStartDate,
+					WalletCreatedDate = targetWallet.WalletCreatedDate,
+					NumberOfPurchases = targetWallet.NumberOfPurchases,
+					PriceOfPurchases = targetWallet.PriceOfPurchases,
+					Score = targetWallet.Score,
 				};
 				return View(WalletVM);
 			}

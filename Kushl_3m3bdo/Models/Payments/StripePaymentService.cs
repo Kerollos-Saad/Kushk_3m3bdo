@@ -5,13 +5,13 @@ namespace Kushl_3m3bdo.Models.Payments
 {
 	public class StripePaymentService : IStripePaymentService
 	{
-		public string CreatePlanCheckoutSession(ChargeWalletPlan plan)
+		public async Task<Session> CreatePlanCheckoutSession(ChargeWalletPlan plan)
 		{
 			var domain = "https://localhost:44308/";
 			var options = new SessionCreateOptions
 			{
-				SuccessUrl = domain + $"payments/OrderConfirmation",
-				CancelUrl = domain + $"wallets/index",
+				SuccessUrl = domain + $"payments/CheckoutSuccess?planId={plan.Id}&sessionId="+ "{CHECKOUT_SESSION_ID}",
+				CancelUrl = domain + $"products/index",
 				LineItems = new List<SessionLineItemOptions>(),
 				Mode = "payment"
 			};
@@ -35,9 +35,9 @@ namespace Kushl_3m3bdo.Models.Payments
 			options.LineItems.Add(sessionLineItem);
 
 			var service = new SessionService();
-			Session session = service.Create(options);
+			Session session = await service.CreateAsync(options);
 
-			return session.Url;
+			return session;
 		}
 	}
 }

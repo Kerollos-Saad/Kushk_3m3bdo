@@ -1,9 +1,10 @@
 ﻿using Kushl_3m3bdo.Models.ViewModels;
+using Stripe.Checkout;
 
 namespace Kushl_3m3bdo.Models.Payments
 {
 	public interface IStripePaymentService
 	{
-		string CreatePlanCheckoutSession(ChargeWalletPlan plan);
+		Task<Session> CreatePlanCheckoutSession(ChargeWalletPlan plan);
 	}
 }

@@ -15,7 +15,7 @@ namespace Kushl_3m3bdo.Models
 		public DateTime PlanSubscriptionStartDate { get; set; }
 		public DateTime WalletCreatedDate { get; set; } = DateTime.UtcNow;
 		public int NumberOfPurchases { get; set; } = 0;
-		public long PriceOfPurchases { get; set; } = 0;
+		public decimal PriceOfPurchases { get; set; } = 0;
 		public double Score { get; set; } = 100.0;
 
 

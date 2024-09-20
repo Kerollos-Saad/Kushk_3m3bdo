@@ -47,11 +47,21 @@
 							</div>
 
 							<div class="row ps-2">
+								<h6 class="text-dark text-opacity-50 ">
+									<b>Credit Score:</b>
+									<span class="halftab"> <b class="text-primary">@Model.Score Point</b> </span>
+								</h6>
+							</div>
+
+							<div class="row ps-2">
 								<h6 class="text-dark text-opacity-50 pb-2">
 									<b>Status:</b>
 
-									@{ var CreditStatus = (@Model.isDebts ? "- Point" : "100 Point"); }
-									<span class="halftab"><b class="text-primary">@CreditStatus</b></span>
+									@{
+										var CreditStatus = (@Model.IsDebts ? "Owed" : "Settled");
+										var Style = (@CreditStatus == "Owed" ? "text-warning" : "text-info");
+									}
+									<span class="halftab"><b class="@Style">@CreditStatus</b></span>
 
 								</h6>
 							</div>
@@ -68,7 +78,7 @@
 								</div>
 							</div>
 						
-							@if (@Model.isDebts)
+							@if (@Model.IsDebts)
 							{
 								<div class="row text-center ps-2">
 									<div class="p-1 col-3 bg-white text-danger fw-bold">
@@ -78,7 +88,7 @@
 										<div>YES</div>
 									</div>
 									<div class="p-1 col-3 bg-white text-danger fw-bold">
-										<div>@((Model.Amount * -1).ToString("C2"))</div>
+										<div>@((Model.Amount).ToString("C2"))</div>
 									</div>
 								</div>
 							}
