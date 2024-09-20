@@ -20,27 +20,12 @@ namespace Kushl_3m3bdo.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStripePaymentService _stripePaymentService;
 
-        private readonly ILogger<PaymentsController> _logger;
-
-
-		public PaymentsController(IApplicationUserRepository applicationUserRepository, IUnitOfWork unitOfWork, IStripePaymentService stripePaymentService, ILogger<PaymentsController> logger)
+		public PaymentsController(IApplicationUserRepository applicationUserRepository, IUnitOfWork unitOfWork, IStripePaymentService stripePaymentService)
         {
             this._userRepository = applicationUserRepository;
             this._unitOfWork = unitOfWork;
             this._stripePaymentService = stripePaymentService;
-			this._logger = logger;
         }
-
-        public List<ChargeWalletPlan> fetchPlans()
-        {
-	        var paymentPlans = new List<ChargeWalletPlan>
-	        {
-		        new ChargeWalletPlan { Id = 1, Name = "Starter", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 100M, AdditionalCreditPercentage = 10.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{"Economic Plan"}},
-		        new ChargeWalletPlan { Id = 2, Name = "Pro 3bdo", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 200M, AdditionalCreditPercentage = 20.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{"Get Notifications For Offers", "Free Support"}},
-		        new ChargeWalletPlan { Id = 3, Name = "Company", ImgSrc = "https://cdn-icons-png.flaticon.com/512/5939/5939991.png", Price = 1000M, AdditionalCreditPercentage = 25.0, NextSubscription = DateTime.UtcNow.AddMonths(1) , Options = new []{"Get Notifications For Offers", "Free Support", "Free Shipping"}}
-	        };
-            return paymentPlans;
-		}
 
         public async Task<ApplicationUser> GetCurrentUser()
         {
@@ -67,7 +52,7 @@ namespace Kushl_3m3bdo.Controllers
 			ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
 			ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
 
-			var paymentPlans = fetchPlans();
+			var paymentPlans = SubscriptionPlan.FetchPlans();
 			return View(paymentPlans);
 		}
 
@@ -95,7 +80,7 @@ namespace Kushl_3m3bdo.Controllers
 
 			// Starting..
 
-			var paymentPlans = fetchPlans();
+			var paymentPlans = SubscriptionPlan.FetchPlans();
             var userPlan = paymentPlans.Find(p => p.Id == PlanId);
 
             var stripeSession = await _stripePaymentService.CreatePlanCheckoutSession(userPlan);
@@ -110,7 +95,7 @@ namespace Kushl_3m3bdo.Controllers
 
 			// Here you can save order and customer details to your database.
 
-			var paymentPlans = fetchPlans();
+			var paymentPlans = SubscriptionPlan.FetchPlans();
 			var userPlan = paymentPlans.Find(p => p.Id == planId);
 
 			var claimsIdentity = (ClaimsIdentity)User.Identity;

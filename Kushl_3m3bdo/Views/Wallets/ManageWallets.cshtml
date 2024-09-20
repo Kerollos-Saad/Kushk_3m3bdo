@@ -1,0 +1,226 @@
+﻿@model IEnumerable<WalletViewModel>
+
+@{
+	ViewData["Title"] = "ManageWallets";
+}
+
+<h1>ManageWallets</h1>
+
+<table class="table align-middle mb-0 bg-white">
+	<thead class="bg-light">
+		<tr>
+			<th>Name</th>
+			@* <th>UserName</th> *@
+			<th>Purchases</th>
+			<th>Status</th>
+			<th>Amount</th>
+			<th>Score</th>
+			<th class="text-center">Plan Subscription</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		@foreach (var walletVm in Model)
+		{
+			<tr>
+				<td>
+					<div class="d-flex align-items-center">
+						@{
+							string UserProfilePic = @walletVm.ProfilePicture != null
+							? $"data:image/*;base64,{Convert.ToBase64String(@walletVm.ProfilePicture)}"
+							: Url.Content("~/images/Default_img.png");
+						}
+						<img src="@UserProfilePic"
+							 alt=""
+							 style="width: 45px; height: 45px"
+							 class="rounded-circle" />
+						<div class="ms-3">
+							<p class="fw-bold mb-1">@(walletVm.FirstName + " " + walletVm.LastName)</p>
+							<p class="text-muted mb-0">@walletVm.Email</p>
+						</div>
+					</div>
+				</td>
+				@* 				<td>
+			<p class="fw-normal mb-1">@walletVm.UserName</p>
+			</td> *@
+				<td>
+					<p class="fw-normal mb-1">Number: <b>@walletVm.NumberOfPurchases</b> </p>
+					<p class="text-muted mb-0">Amount: <b>@walletVm.PriceOfPurchases</b> </p>
+				</td>
+				<td>
+					@{
+						if (@walletVm.IsDebts)
+						{
+							<span class="badge bg-warning rounded-pill d-inline">Owed</span>
+						}
+						else
+						{
+							if (@walletVm.DebtRequest)
+							{
+								<span class="badge bg-primary rounded-pill d-inline">Dept On Request</span>
+							}
+							else
+							{
+								<span class="badge bg-success rounded-pill d-inline">Settled</span>
+							}
+						}
+					}
+				</td>
+				<td>
+					@{
+						var walletAmount = (walletVm.IsDebts ? (-1 * walletVm.Amount) : walletVm.Amount);
+					}
+					<p class="fw-bold mb-1">$ @walletAmount</p>
+				</td>
+				<td><b>@walletVm.Score</b> Points</td>
+				<td>
+					@{
+						if (DateTime.UtcNow > walletVm.PlanSubscriptionStartDate.AddMonths(1))
+						{
+							<div class="d-flex justify-content-center align-items-center">
+								<a type="button"
+								   class="btn btn-outline-danger"
+								   data-mdb-ripple-init
+								   data-mdb-ripple-color="dark"
+								   asp-controller="Payments"
+								   asp-action="Plans">
+									Subscribe Now
+								</a>
+							</div>
+						}
+						else
+						{
+							<div class="container">
+								<div class="row g-0 justify-content-center align-items-center">
+									<div class="col g-0 d-flex justify-content-center align-items-center">
+										<span class="badge bg-info rounded-pill d-inline">Subscribe</span>
+									</div>
+									<div class="col g-0 d-flex justify-content-center align-items-center">
+										<p class="fw-normal mb-1">@ViewBag.PlansDict[walletVm.SubscriptionPlanId]</p>
+									</div>
+								</div>
+							</div>
+						}
+					}
+				</td>
+				<td>
+					<a type="button"
+							class="btn btn-dark fw-bold"
+							data-mdb-ripple-init
+							asp-controller="Wallets"
+							asp-action="WalletX"
+							asp-route-walletId="@walletVm.WalletId">
+						More Details
+					</a>
+				</td>
+			</tr>
+		}
+
+
+
+
+
+
+
+
+
+
+
+		<tr>
+			<td>
+				<div class="d-flex align-items-center">
+					<img src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+						 alt=""
+						 style="width: 45px; height: 45px"
+						 class="rounded-circle" />
+					<div class="ms-3">
+						<p class="fw-bold mb-1">John Doe</p>
+						<p class="text-muted mb-0">john.doe@gmail.com</p>
+					</div>
+				</div>
+			</td>
+			<td>
+				<p class="fw-normal mb-1">Software engineer</p>
+				<p class="text-muted mb-0">IT department</p>
+			</td>
+			<td>
+				<span class="badge bg-success rounded-pill d-inline">Active</span>
+			</td>
+			<td>Senior</td>
+			<td>
+				<button type="button"
+						class="btn btn-dark fw-bold"
+						data-mdb-ripple-init>
+					Edit
+				</button>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<div class="d-flex align-items-center">
+					<img src="https://mdbootstrap.com/img/new/avatars/6.jpg"
+						 class="rounded-circle"
+						 alt=""
+						 style="width: 45px; height: 45px" />
+					<div class="ms-3">
+						<p class="fw-bold mb-1">Alex Ray</p>
+						<p class="text-muted mb-0">alex.ray@gmail.com</p>
+					</div>
+				</div>
+			</td>
+			<td>
+				<p class="fw-normal mb-1">Consultant</p>
+				<p class="text-muted mb-0">Finance</p>
+			</td>
+			<td>
+				<span class="badge bg-primary rounded-pill d-inline">Onboarding</span>
+			</td>
+			<td>Junior</td>
+			<td>
+				<button type="button"
+						class="btn btn-dark fw-bold"
+						data-mdb-ripple-init>
+					Edit
+				</button>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<div class="d-flex align-items-center">
+					<img src="https://mdbootstrap.com/img/new/avatars/7.jpg"
+						 class="rounded-circle"
+						 alt=""
+						 style="width: 45px; height: 45px" />
+					<div class="ms-3">
+						<p class="fw-bold mb-1">Kate Hunington</p>
+						<p class="text-muted mb-0">kate.hunington@gmail.com</p>
+					</div>
+				</div>
+			</td>
+			<td>
+				<p class="fw-normal mb-1">Designer</p>
+				<p class="text-muted mb-0">UI/UX</p>
+			</td>
+			<td>
+				<span class="badge bg-warning rounded-pill d-inline">Awaiting</span>
+			</td>
+			<td>Senior</td>
+			<td>
+				<button type="button"
+						class="btn btn-dark fw-bold"
+						data-mdb-ripple-init>
+					Edit
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+@section Scripts
+{
+	<partial name="_ValidationScriptsPartial" />
+}

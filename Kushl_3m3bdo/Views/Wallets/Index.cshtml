@@ -1,10 +1,23 @@
-﻿@model WalletViewModel
+﻿@using Kushl_3m3bdo.Models.Consts
+@model WalletViewModel
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 }
 
-<h1>My Wallet</h1>
+<div class="row">
+	<div class="col">
+		<h1>My Wallet</h1>
+	</div>
+	@if (User.IsInRole(Roles.Role_Manager) || User.IsInRole(Roles.Role_Admin))
+	{
+		<div class="col d-flex justify-content-end align-items-end">
+			<a asp-controller="Wallets" asp-action="ManageWallets" class="btn text-white" data-mdb-ripple-init style="background-color: #ac2bac;">
+				Manage Wallets
+			</a>
+		</div>
+	}
+</div>
 
 <form method="post" enctype="multipart/form-data">
 
@@ -25,7 +38,7 @@
 				<div class="row">
 
 					<div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
-						<img id="ProfilePicture" alt="profile" src="~/images/Wallet.png" width="100%" class="rounded img-fluid catlogo card-img"/>
+						<img id="ProfilePicture" alt="profile" src="~/images/Wallet.png" width="100%" class="rounded img-fluid catlogo card-img" />
 					</div>
 
 					<div class="col-12 col-lg-6 offset-lg-1">
@@ -36,7 +49,7 @@
 								<span class="halftab"> @(Model.FirstName + " " + Model.LastName)</span>
 							</h6>
 						</div>
-						
+
 						@if (@Model.WalletId != 0)
 						{
 							<div class="row ps-2">
@@ -77,7 +90,7 @@
 									<div class="text-dark text-opacity-50 fw-semibold"><b>Loan Amount</b></div>
 								</div>
 							</div>
-						
+
 							@if (@Model.IsDebts)
 							{
 								<div class="row text-center ps-2">
@@ -125,15 +138,15 @@
 								<p class="text-secondary lh-sm">planning for your retirement</p>
 							</span>
 						</div>
-						
+
 						@if (@Model.WalletId == 0)
 						{
 							<div class="row">
 								<div class="col-12 col-md-6 pb-1">
 									@* 									<button type="submit"
-									        class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
-										Create A Wallet
-									</button> *@
+								class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
+								Create A Wallet
+								</button> *@
 									<a asp-controller="Wallets" asp-action="CreateWallet" class="btn btn-warning bg-gradient  w-100 py-2 text-uppercase fw-semibold">Create A Wallet</a>
 								</div>
 							</div>
@@ -165,7 +178,7 @@
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
-	<partial name="_DeleteWarningPartial"/>
+	<partial name="_DeleteWarningPartial" />
 
 	<script type="text/javascript">
 		var pathToDelete;
