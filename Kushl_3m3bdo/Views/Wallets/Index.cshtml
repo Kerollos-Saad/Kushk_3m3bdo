@@ -147,17 +147,29 @@
 								class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">
 								Create A Wallet
 								</button> *@
-									<a asp-controller="Wallets" asp-action="CreateWallet" class="btn btn-warning bg-gradient  w-100 py-2 text-uppercase fw-semibold">Create A Wallet</a>
+									<a asp-controller="Wallets" asp-action="CreateWallet" class="btn btn-warning bg-gradient w-100 py-2 text-uppercase fw-bold">Create A Wallet</a>
 								</div>
 							</div>
 						}
 						else
 						{
-							<div class="row">
-								<div class="col-12 col-md-6 pb-1">
-									<a asp-controller="Payments" asp-action="Plans" class="btn btn-primary bg-gradient  w-100 py-2 text-uppercase fw-semibold">Charge My Wallet</a>
+							if (User.Identity.Name == Model.UserName)
+							{
+								<div class="row">
+									<div class="col-12 col-md-6 pb-1">
+										<a asp-controller="Payments" asp-action="Plans" class="btn btn-primary bg-gradient w-100 py-2 text-uppercase fw-bold">Charge My Wallet</a>
+									</div>
 								</div>
-							</div>
+							}
+							else
+							{
+								<div class="row">
+									<div class="col-12 col-md-6 pb-1">
+										<a asp-controller="Payments" asp-action="Plans" class="btn btn-success bg-gradient w-100 py-2 text-uppercase fw-bold">Charge User Wallet</a>
+									</div>
+								</div>
+							}
+
 						}
 
 					</div>

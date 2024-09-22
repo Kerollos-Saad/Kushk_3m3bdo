@@ -174,7 +174,9 @@ namespace Kushl_3m3bdo.Controllers
 		{
 			var targetWallet = await _unitOfWork.Wallets.GetByIdAsync(walletId);
 
-			return View(targetWallet);
+			var targetWalletViewModel = await WalletToWalletViewModelConverter(targetWallet);
+
+			return View("Index", targetWalletViewModel);
 		}
 	}
 }
