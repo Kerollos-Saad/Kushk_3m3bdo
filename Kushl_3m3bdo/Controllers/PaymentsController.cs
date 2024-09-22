@@ -36,7 +36,6 @@ namespace Kushl_3m3bdo.Controllers
 
             return applicationUser;
 		}
-            
 
 		public IActionResult Index()
 		{
@@ -46,11 +45,17 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Plans()
 		{
-			var currentUser = await GetCurrentUser();
-			var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+			ViewData["IsUser"] = false;
 
-			ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
-			ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
+			if (User.Identity.IsAuthenticated)
+			{
+				var currentUser = await GetCurrentUser();
+				var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+
+				ViewData["IsUser"] = true;
+				ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
+				ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
+			}
 
 			var paymentPlans = SubscriptionPlan.FetchPlans();
 			return View(paymentPlans);

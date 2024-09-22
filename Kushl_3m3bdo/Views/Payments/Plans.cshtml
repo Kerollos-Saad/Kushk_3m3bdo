@@ -15,6 +15,16 @@
 			</div>
 		</div>
 	</div>
+	
+	@{
+		var ControllerName = "Users";
+		var ActionName = "Index";
+		if (ViewBag.IsUser)
+		{
+			ControllerName = "Payments";
+			ActionName = "PlanPayment";
+		}
+	}
 
 	<div class="container">
 		<div class="row gy-5 gy-lg-0 gx-xl-5">
@@ -63,7 +73,7 @@
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 							@* <a asp-controller="Payment" asp-action="PlanPayment" asp-route-PlanId="1" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
+							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
 								<input type="hidden" name="PlanId" value="@Model[0].Id" />
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-1" class="btn btn-lg btn-outline-primary">Choose Plan</button>
@@ -120,7 +130,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-primary">Choose Plan</a> *@
 
-							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
+							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
 								<input type="hidden" name="PlanId" value="@Model[1].Id" />
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-2" class="btn btn-lg btn-primary">Choose Plan</button>
@@ -176,7 +186,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller="Payments" asp-action="PlanPayment" method="post">
+							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
 								<input type="hidden" name="PlanId" value="@Model[2].Id"/>
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-3" class="btn btn-lg btn-outline-primary">Choose Plan</button>
@@ -208,19 +218,23 @@
 @section Scripts
 {
 	<partial name="_ValidationScriptsPartial" />
-	<partial name="_HavePlanWarningPartial" />
-
-	@if (@ViewBag.IsSubscribeToPlan.Equals(true))
+	
+	@if (ViewBag.IsUser)
 	{
-		<script type="text/javascript">
+		<partial name="_HavePlanWarningPartial"/>
 
-			$(document).on("click",
-				"[id^='SubscriptionPlan-']",
-				function(e) {
-					e.preventDefault();
-					$(".modal").modal('show');
-				});
+		@if (@ViewBag.IsSubscribeToPlan.Equals(true))
+		{
+			<script type="text/javascript">
 
-		</script>
+				$(document).on("click",
+					"[id^='SubscriptionPlan-']",
+					function(e) {
+						e.preventDefault();
+						$(".modal").modal('show');
+					});
+
+			</script>
+		}
 	}
 }
