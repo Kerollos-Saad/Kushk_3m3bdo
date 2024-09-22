@@ -46,15 +46,24 @@ namespace Kushl_3m3bdo.Controllers
 		public async Task<IActionResult> Plans()
 		{
 			ViewData["IsUser"] = false;
+			ViewData["HaveWallet"] = false;
+
+			ViewData["IsSubscribeToPlan"] = false;
+			ViewData["NextSubscriptionDate"] = false;
 
 			if (User.Identity.IsAuthenticated)
 			{
-				var currentUser = await GetCurrentUser();
-				var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
-
 				ViewData["IsUser"] = true;
-				ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
-				ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
+				var currentUser = await GetCurrentUser();
+
+				if (currentUser.WalletId != null)
+				{
+					ViewData["HaveWallet"] = true;
+					var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+
+					ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
+					ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
+				}
 			}
 
 			var paymentPlans = SubscriptionPlan.FetchPlans();

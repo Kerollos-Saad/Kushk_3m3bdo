@@ -17,12 +17,23 @@
 	</div>
 	
 	@{
-		var ControllerName = "Users";
-		var ActionName = "Index";
+		// Guest So he's Didn't Have Wallet
+		var controllerName = "Users";
+		var actionName = "Index";
 		if (ViewBag.IsUser)
 		{
-			ControllerName = "Payments";
-			ActionName = "PlanPayment";
+			if (ViewBag.HaveWallet)
+			{
+				// User Have Wallet
+				controllerName = "Payments";
+				actionName = "PlanPayment";
+			}
+			else
+			{
+				// User Didn't Have Wallet
+				controllerName = "Wallets";
+				actionName = "Index";
+			}
 		}
 	}
 
@@ -73,7 +84,7 @@
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 							@* <a asp-controller="Payment" asp-action="PlanPayment" asp-route-PlanId="1" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="post">
 								<input type="hidden" name="PlanId" value="@Model[0].Id" />
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-1" class="btn btn-lg btn-outline-primary">Choose Plan</button>
@@ -130,7 +141,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-primary">Choose Plan</a> *@
 
-							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="post">
 								<input type="hidden" name="PlanId" value="@Model[1].Id" />
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-2" class="btn btn-lg btn-primary">Choose Plan</button>
@@ -186,7 +197,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller="@ControllerName" asp-action="@ActionName" method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="post">
 								<input type="hidden" name="PlanId" value="@Model[2].Id"/>
 								<div class="d-grid gap-2">
 									<button type="submit" id="SubscriptionPlan-3" class="btn btn-lg btn-outline-primary">Choose Plan</button>

@@ -11,7 +11,7 @@ namespace Kushl_3m3bdo.Models.Payments
 			var options = new SessionCreateOptions
 			{
 				SuccessUrl = domain + $"payments/CheckoutSuccess?planId={plan.Id}&sessionId="+"{CHECKOUT_SESSION_ID}",
-				CancelUrl = domain + $"products/index",
+				CancelUrl = domain + $"wallets/index",
 				LineItems = new List<SessionLineItemOptions>(),
 				Mode = "payment"
 			};

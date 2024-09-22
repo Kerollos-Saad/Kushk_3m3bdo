@@ -73,6 +73,7 @@ namespace Kushl_3m3bdo.Controllers
 		}
 
 		[HttpGet]
+		[HttpPost]
 		public async Task<IActionResult> Index()
 		{
 			var user = await _userManager.GetUserAsync(User);
