@@ -37,6 +37,7 @@ namespace Kushl_3m3bdo.Controllers
             return applicationUser;
 		}
 
+		// Nothing
 		public IActionResult Index()
 		{
 			return View();
