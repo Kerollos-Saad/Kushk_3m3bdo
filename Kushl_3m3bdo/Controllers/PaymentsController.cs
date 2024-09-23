@@ -44,8 +44,10 @@ namespace Kushl_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Plans()
+		public async Task<IActionResult> Plans(int? walletId)
 		{
+			ViewData["WalletId"] = walletId;
+
 			ViewData["IsUser"] = false;
 			ViewData["HaveWallet"] = false;
 
@@ -66,21 +68,24 @@ namespace Kushl_3m3bdo.Controllers
 					ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
 				}
 			}
-
-			var paymentPlans = SubscriptionPlan.FetchPlans();
-			return View(paymentPlans);
+			
+			var subscriptionPlans = SubscriptionPlan.FetchPlans();
+			return View(subscriptionPlans);
 		}
 
         [HttpPost]
-        public async Task<IActionResult> PlanPayment(int PlanId)
+        public async Task<IActionResult> PlanPayment(int planId, int? walletId)
         {
-	        var claimsIdentity = (ClaimsIdentity)User.Identity;
-	        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+	        var userWalletId = walletId;
+	        if (walletId == null)
+	        {
+		        ApplicationUser applicationUser = await GetCurrentUser();
+		        userWalletId = applicationUser.WalletId.Value;
+	        }
 
-	        ApplicationUser applicationUser = await _userRepository.GetById(userId);
-	        var wallet = await _unitOfWork.Wallets.GetByIdAsync(applicationUser.WalletId.Value);
-
-			// Check if User Purchase a Plan This Month
+	        var wallet = await _unitOfWork.Wallets.GetByIdAsync(userWalletId.Value);
+			
+	        // Check if User Purchase a Plan This Month
 
 			if (wallet.IsSubscribeToPlan)
 			{
@@ -96,9 +101,17 @@ namespace Kushl_3m3bdo.Controllers
 			// Starting..
 
 			var paymentPlans = SubscriptionPlan.FetchPlans();
-            var userPlan = paymentPlans.Find(p => p.Id == PlanId);
+            var userPlan = paymentPlans.Find(p => p.Id == planId);
+            Session stripeSession;
 
-            var stripeSession = await _stripePaymentService.CreatePlanCheckoutSession(userPlan);
+			if (walletId == null)
+            {
+	            stripeSession = await _stripePaymentService.CreatePlanCheckoutSession(userPlan);
+            }
+            else
+            {
+	            stripeSession = await _stripePaymentService.CreatePlanCheckoutSessionAdministration(userPlan, walletId.Value);
+            }
 
             return Redirect(stripeSession.Url);
         }
@@ -133,5 +146,27 @@ namespace Kushl_3m3bdo.Controllers
 
 			return RedirectToAction("Index","Wallets");
         }
+
+        public async Task<IActionResult> CheckoutSuccessAdministration(int planId, int walletId)
+        {
+	        var paymentPlans = SubscriptionPlan.FetchPlans();
+	        var userPlan = paymentPlans.Find(p => p.Id == planId);
+
+			var wallet = await _unitOfWork.Wallets.GetByIdAsync(walletId);
+
+	        wallet.IsSubscribeToPlan = true;
+	        wallet.SubscriptionPlanId = userPlan.Id;
+	        wallet.NumberOfSubscriptionPlans += 1;
+	        wallet.Amount += userPlan.Price * (1 + (decimal)(userPlan.AdditionalCreditPercentage / 100));
+	        wallet.PlanSubscriptionStartDate = DateTime.UtcNow;
+	        wallet.Score += (double)(userPlan.Price / 100);
+
+	        wallet.IsDebts = (wallet.Amount < 0);
+
+	        await _unitOfWork.Wallets.Update(wallet);
+	        await _unitOfWork.SaveAsync();
+
+			return RedirectToAction("Index", "Wallets");
+		}
 	}
 }
