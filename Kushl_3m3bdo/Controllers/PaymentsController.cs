@@ -57,13 +57,27 @@ namespace Kushl_3m3bdo.Controllers
 			if (User.Identity.IsAuthenticated)
 			{
 				ViewData["IsUser"] = true;
-				var currentUser = await GetCurrentUser();
 
-				if (currentUser.WalletId != null)
+				if (walletId == null)
 				{
-					ViewData["HaveWallet"] = true;
-					var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+					// Charge Wallet For Operating User
+					ApplicationUser currentUser = await GetCurrentUser();
 
+					if (currentUser.WalletId != null)
+					{
+						ViewData["HaveWallet"] = true;
+						var wallet = await _unitOfWork.Wallets.GetByIdAsync(currentUser.WalletId.Value);
+
+						ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
+						ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
+					}
+				}
+				else
+				{
+					// Charge Wallet For Another User
+					var wallet = await _unitOfWork.Wallets.GetByIdAsync(walletId.Value);
+
+					ViewData["HaveWallet"] = true;
 					ViewData["IsSubscribeToPlan"] = wallet.IsSubscribeToPlan;
 					ViewData["NextSubscriptionDate"] = wallet.PlanSubscriptionStartDate.AddMonths(1);
 				}

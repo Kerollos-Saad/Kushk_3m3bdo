@@ -159,6 +159,10 @@ namespace Kushl_3m3bdo.Controllers
 			//
 			// Cause We need a reference for a wallet ==> foreign key constraint violation
 			//
+			// If i want to get the wallet direct and delete it i should handle the reference of walletId at User before Delete
+			// Like get the user and then ==> user.walletId = null
+			// Then delete the wallet 
+			// Or get the reference at The Next Way ...
 
 			var user = await _userManager.Users.Include(u => u.Wallet)
 				.FirstOrDefaultAsync(u => u.WalletId == walletId);
