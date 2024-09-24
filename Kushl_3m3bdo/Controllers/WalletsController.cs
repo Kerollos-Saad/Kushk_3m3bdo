@@ -131,7 +131,7 @@ namespace Kushl_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Remove(int WalletId)
+		public async Task<IActionResult> Remove(int walletId)
 		{
 			var user = await _userManager.Users.Include(u => u.Wallet)
 				.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
@@ -139,6 +139,33 @@ namespace Kushl_3m3bdo.Controllers
 			if (user.Wallet == null)
 			{
 				return BadRequest("User doesn't have a wallet.");
+			}
+
+			var wallet = user.Wallet;
+
+			await _unitOfWork.Wallets.RemoveAsync(wallet);
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		public async Task<IActionResult> RemoveAdministration(int walletId)
+		{
+			// Why We Use Version For Administration ?
+			// Cause Try Two Techniques
+			// Why We Didn't Get the Wallet Direct From DB By wallet Id
+			//
+			// Cause We need a reference for a wallet ==> foreign key constraint violation
+			//
+
+			var user = await _userManager.Users.Include(u => u.Wallet)
+				.FirstOrDefaultAsync(u => u.WalletId == walletId);
+
+			if (user.Wallet == null)
+			{
+				return BadRequest("Hi Admin, This User doesn't have a wallet.");
 			}
 
 			var wallet = user.Wallet;

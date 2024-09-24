@@ -166,7 +166,7 @@
 								<div class="row">
 									<div class="col-12 col-md-6 pb-1">
 										<input type="hidden" name="walletId" value="@Model.WalletId" />
-										<a asp-controller="Payments" asp-action="Plans" class="btn btn-success bg-gradient w-100 py-2 text-uppercase fw-bold">Charge User Wallet</a>
+										<a asp-controller="Payments" asp-action="Plans" asp-route-walletId="@Model.WalletId" class="btn btn-success bg-gradient w-100 py-2 text-uppercase fw-bold">Charge User Wallet</a>
 									</div>
 								</div>
 							}
@@ -179,12 +179,24 @@
 			</div>
 		</div>
 
-		<div class="card-footer">
+		@if (User.Identity.Name == Model.UserName)
+		{
+			<div class="card-footer">
 
-			<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back To Home</a>
-			<a asp-controller="Wallets" asp-action="Remove" asp-route-WalletId="@Model.WalletId" class="btn btn-danger float-end deleteWallet" data-path="@Url.Action("Remove", "Wallets", new { WalletId = @Model.WalletId })">Delete Wallet</a>
+				<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back To Home</a>
+				<a asp-controller="Wallets" asp-action="Remove" class="btn btn-danger float-end deleteWallet" data-path="@Url.Action("Remove", "Wallets", new { WalletId = @Model.WalletId })">Delete Wallet</a>
 
-		</div>
+			</div>
+		}
+		else
+		{
+			<div class="card-footer">
+
+				<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back To Home</a>
+				<a asp-controller="Wallets" asp-action="RemoveAdministration" asp-route-walletId="@Model.WalletId" class="btn btn-danger float-end deleteWallet" data-path="@Url.Action("RemoveAdministration", "Wallets", new { walletId = @Model.WalletId })">Delete User Wallet</a>
+
+			</div>
+		}
 
 	</div>
 </form>
