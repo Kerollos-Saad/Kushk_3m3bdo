@@ -22,8 +22,4 @@
     <PackageReference Include="Stripe.net" Version="45.13.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\ViewModels\" />
-  </ItemGroup>
-
 </Project>
