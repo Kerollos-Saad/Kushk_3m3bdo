@@ -1,13 +1,13 @@
 ﻿using Kushl_3m3bdo.Data.Repository.IRepository;
-using Kushl_3m3bdo.Data.ViewModels;
 using Kushl_3m3bdo.Models;
+using Kushl_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace Kushl_3m3bdo.Data.Repository
 {
-	public class ApplicationUserRepository : IApplicationUserRepository
+    public class ApplicationUserRepository : IApplicationUserRepository
 	{
 
 		private readonly UserManager<ApplicationUser> _userManager;

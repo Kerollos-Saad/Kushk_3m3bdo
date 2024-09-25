@@ -1,5 +1,4 @@
 ﻿using Kushl_3m3bdo.Data.Repository.IRepository;
-using Kushl_3m3bdo.Data.ViewModels;
 using Kushl_3m3bdo.Models;
 using Kushl_3m3bdo.Models.Consts;
 using Kushl_3m3bdo.Models.ViewModels;
@@ -10,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kushl_3m3bdo.Controllers
 {
-	public class WalletsController : Controller
+    public class WalletsController : Controller
 	{
 
 		private readonly IUnitOfWork _unitOfWork;

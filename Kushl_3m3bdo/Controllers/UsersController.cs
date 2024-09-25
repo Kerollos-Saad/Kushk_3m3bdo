@@ -1,11 +1,11 @@
 ﻿using Kushl_3m3bdo.Data.Repository.IRepository;
-using Kushl_3m3bdo.Data.ViewModels;
+using Kushl_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kushl_3m3bdo.Controllers
 {
-	[Authorize(Roles = "Manager,Admin")]
+    [Authorize(Roles = "Manager,Admin")]
 	public class UsersController : Controller
 	{
 		private readonly IApplicationUserRepository _userRepository;

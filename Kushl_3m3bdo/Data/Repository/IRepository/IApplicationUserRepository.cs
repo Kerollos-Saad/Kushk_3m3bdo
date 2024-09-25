@@ -1,9 +1,9 @@
-﻿using Kushl_3m3bdo.Data.ViewModels;
-using Kushl_3m3bdo.Models;
+﻿using Kushl_3m3bdo.Models;
+using Kushl_3m3bdo.Models.ViewModels;
 
 namespace Kushl_3m3bdo.Data.Repository.IRepository
 {
-	public interface IApplicationUserRepository
+    public interface IApplicationUserRepository
 	{
 		Task<IEnumerable<UserViewModel>> GetUsers();
 
