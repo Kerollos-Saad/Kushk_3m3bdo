@@ -82,13 +82,18 @@ namespace Kushl_3m3bdo.Controllers
 		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Details(int Id)
 		{
-			var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
+			// First Ways
+			//var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
 
-	        var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
+			//var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
 	        
-	        ViewData["ProductCategory"] = Category.Name;
+			//ViewData["ProductCategory"] = Category.Name;
 
-			return View(targetProduct);
+			// Second Way
+	        var target = await _unitOfWork.Products.FindExpressionAsync(p => p.Id == Id,new[] { "Category" });
+	        ViewData["ProductCategory"] = target.Category.Name;
+
+			return View(target);
         }
 
 		[HttpGet]

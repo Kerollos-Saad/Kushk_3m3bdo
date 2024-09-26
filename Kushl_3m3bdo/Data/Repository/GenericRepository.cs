@@ -49,7 +49,13 @@ namespace Kushl_3m3bdo.Data.Repository
 
 		public async Task<T> FindExpressionAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			return await DbSet.SingleOrDefaultAsync(Filter);
+			IQueryable<T> query = DbSet;
+
+			if (includeProperties != null)
+				foreach (var property in includeProperties)
+					query = query.Include(property);
+
+			return await query.SingleOrDefaultAsync(Filter);
 		}
 
 		public IEnumerable<T> FindAllExpression(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
