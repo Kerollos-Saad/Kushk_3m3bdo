@@ -16,6 +16,9 @@ namespace Kushl_3m3bdo.Data.Repository
 			this.DbSet = _context.Set<T>();
 		}
 
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
 		public T GetById(int id)
 		{
 			return DbSet.Find(id);
@@ -25,6 +28,9 @@ namespace Kushl_3m3bdo.Data.Repository
 		{
 			return await DbSet.FindAsync(id);
 		}
+
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
 
 		public IEnumerable<T> GetAll()
 		{
@@ -36,53 +42,48 @@ namespace Kushl_3m3bdo.Data.Repository
 			return await DbSet.ToListAsync();
 		}
 
-		public T FindExpression(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
+		public IEnumerable<T> FindAllExpressionProp(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
 			IQueryable<T> query = DbSet;
 
-			if (includeProperties != null)
-				foreach (var property in includeProperties)
-					query = query.Include(property);
-			
-			return query.SingleOrDefault(Filter);
-		}
-
-		public async Task<T> FindExpressionAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
-		{
-			IQueryable<T> query = DbSet;
-
-			if (includeProperties != null)
-				foreach (var property in includeProperties)
-					query = query.Include(property);
-
-			return await query.SingleOrDefaultAsync(Filter);
-		}
-
-		public IEnumerable<T> FindAllExpression(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
-		{
-			IQueryable<T> query = DbSet;
-
-			if (includeProperties != null)
-				foreach (var property in includeProperties)
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>(); 
+			foreach (var property in includeProperties)
 					query = query.Include(property);
 
 			return query.Where(Filter).ToList();
 		}
 
-		public async Task<IEnumerable<T>> FindAllExpressionAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		public async Task<IEnumerable<T>> FindAllExpressionPropAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
 		{
-			return await DbSet.Where(Filter).ToListAsync();
+			IQueryable<T> query = DbSet;
+
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>(); 
+			foreach (var property in includeProperties)
+					query = query.Include(property);
+
+			return await query.Where(Filter).ToListAsync();
 		}
 
-		public IEnumerable<T> FindAllExpression(Expression<Func<T, bool>> Filter, int skip, int take)
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
+		public IEnumerable<T> FindAllExpressionRange(Expression<Func<T, bool>> Filter, int skip, int take)
 		{
 			return DbSet.Where(Filter).Skip(skip).Take(take).ToList();
 		}
 
-		public async Task<IEnumerable<T>> FindAllExpressionAsync(Expression<Func<T, bool>> Filter, int skip, int take)
+		public async Task<IEnumerable<T>> FindAllExpressionRangeAsync(Expression<Func<T, bool>> Filter, int skip, int take)
 		{
 			return await DbSet.Where(Filter).Skip(skip).Take(take).ToListAsync();
 		}
+
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
 
 		public IEnumerable<T> FindAll(Expression<Func<T, bool>>? Filter, int? skip, int? take,
 			string[] includeProperties = null,
@@ -90,63 +91,132 @@ namespace Kushl_3m3bdo.Data.Repository
 		{
 			IQueryable<T> query = DbSet;
 
-			if (includeProperties != null)
-				foreach (var property in includeProperties)
+			// Include properties if provided by (??) null-coalescing operator
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
 					query = query.Include(property);
 
-			if (Filter!= null)
+			// Apply Filtering
+			if (Filter != null)
 				query = query.Where(Filter);
 
-			if(take.HasValue)
-				query = query.Take(take.Value);
-
-			if (skip.HasValue)
-				query = query.Skip(skip.Value);
-
+			// Apply ordering
 			if (orderBy != null)
 			{
-				if(orderByDirection ==  OrderBy.Ascending)
-					query = query.OrderBy(orderBy);
-				else
-					query = query.OrderByDescending(orderBy);
+				query = orderByDirection == OrderBy.Ascending
+					? query.OrderBy(orderBy)
+					: query.OrderByDescending(orderBy);
 			}
+
+			// Apply pagination
+			if (skip.HasValue)
+				query = query.Skip(skip.Value);
+			if (take.HasValue)
+				query = query.Take(take.Value);
 
 			return query.ToList();
 		}
 
-		public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> Filter, int? skip, int? take, string[] includeProperties = null,
+		public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? Filter, int? skip, int? take, string[] includeProperties = null,
 			Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
 		{
 			IQueryable<T> query = DbSet;
 
-			if (includeProperties != null)
-				foreach (var property in includeProperties)
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
 					query = query.Include(property);
 
+			// Apply Filtering
 			if (Filter != null)
 				query = query.Where(Filter);
 
-			if (take.HasValue)
-				query = query.Take(take.Value);
-
-			if (skip.HasValue)
-				query = query.Skip(skip.Value);
-
+			// Apply ordering
 			if (orderBy != null)
 			{
-				if (orderByDirection == OrderBy.Ascending)
-					query = query.OrderBy(orderBy);
-				else
-					query = query.OrderByDescending(orderBy);
+				query = orderByDirection == OrderBy.Ascending
+					? query.OrderBy(orderBy)
+					: query.OrderByDescending(orderBy);
 			}
+
+			// Apply pagination
+			if (skip.HasValue)
+				query = query.Skip(skip.Value);
+			if (take.HasValue)
+				query = query.Take(take.Value);
 
 			return await query.ToListAsync();
 		}
 
+
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
+		public T? FindNullable(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		{
+			IQueryable<T> query = DbSet;
+
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
+				query = query.Include(property);
+
+			return query.SingleOrDefault(Filter);
+		}
+
+		public async Task<T?> FindNullableAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		{
+			IQueryable<T> query = DbSet;
+
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
+				query = query.Include(property);
+
+			return await query.SingleOrDefaultAsync(Filter);
+		}
+
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
+		public T Find(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		{
+			IQueryable<T> query = DbSet;
+
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
+				query = query.Include(property);
+
+			// Apply filtering
+			if (Filter != null)
+				query = query.Where(Filter);
+
+			return query.FirstOrDefault();
+		}
+
+		public async Task<T> FindAsync(Expression<Func<T, bool>> Filter, string[] includeProperties = null)
+		{
+			IQueryable<T> query = DbSet;
+
+			// Include properties if provided
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
+				query = query.Include(property);
+
+			// Apply filtering
+			if (Filter != null)
+				query = query.Where(Filter);
+
+			return await query.FirstOrDefaultAsync();
+		}
+
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
 		public T Add(T entity)
 		{
 			_context.Set<T>().Add(entity);
-			_context.SaveChanges();
 
 			return entity;
 		}
@@ -154,15 +224,16 @@ namespace Kushl_3m3bdo.Data.Repository
 		public async Task<T> AddAsync(T entity)
 		{
 			await _context.Set<T>().AddAsync(entity);
-			await _context.SaveChangesAsync();
 
 			return entity;
 		}
 
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
 		public IEnumerable<T> AddRange(IEnumerable<T> entities)
 		{
 			_context.Set<T>().AddRange(entities);
-			_context.SaveChanges();
 
 			return entities;
 		}
@@ -170,15 +241,16 @@ namespace Kushl_3m3bdo.Data.Repository
 		public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
 		{
 			await _context.Set<T>().AddRangeAsync(entities);
-			await _context.SaveChangesAsync();
 
 			return entities;
 		}
 
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
 		public T Remove(T entity)
 		{
 			_context.Set<T>().Remove(entity);
-			_context.SaveChanges();
 
 			return entity;
 		}
@@ -186,15 +258,16 @@ namespace Kushl_3m3bdo.Data.Repository
 		public async Task<T> RemoveAsync(T entity)
 		{
 			_context.Set<T>().Remove(entity);
-			await _context.SaveChangesAsync();
 
 			return entity;
 		}
 
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
 		public IEnumerable<T> RemoveRange(IEnumerable<T> entities)
 		{
 			_context.Set<T>().RemoveRange(entities);
-			_context.SaveChanges();
 
 			return entities;
 		}
@@ -202,27 +275,27 @@ namespace Kushl_3m3bdo.Data.Repository
 		public async Task<IEnumerable<T>> RemoveRangeAsync(IEnumerable<T> entities)
 		{
 			_context.Set<T>().RemoveRange(entities);
-			await _context.SaveChangesAsync();
 
 			return entities;
 		}
 
-		public T RemoveWithId(int Id)
+		// ---------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------
+
+		public T RemoveById(int Id)
 		{
 			var entity = _context.Set<T>().Find(Id);
 
 			_context.Set<T>().Remove(entity);
-			_context.SaveChanges();
 
 			return entity;
 		}
 
-		public async Task<T> RemoveWithIdAsync(int Id)
+		public async Task<T> RemoveByIdAsync(int Id)
 		{
 			var entity = await _context.Set<T>().FindAsync(Id);
 
 			_context.Set<T>().Remove(entity);
-			await _context.SaveChangesAsync();
 
 			return entity;
 		}

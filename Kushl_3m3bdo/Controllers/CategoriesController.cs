@@ -82,7 +82,8 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Remove(int categoryId)
 		{
-			await _unitOfWork.Categories.RemoveWithIdAsync(categoryId);
+			await _unitOfWork.Categories.RemoveByIdAsync(categoryId);
+			await _unitOfWork.SaveAsync();
 
 			return RedirectToAction(nameof(Index));
 		}

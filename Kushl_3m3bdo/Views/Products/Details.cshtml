@@ -40,7 +40,8 @@
 						<div class="col-12 col-md-6 pb-4">
 							<h6 class="text-dark text-opacity-50 ">
 								<b>Category:</b> 
-								<span class="halftab">@ViewBag.ProductCategory.ToUpper()</span>
+								@* <span class="halftab">@ViewBag.ProductCategory.ToUpper()</span> *@
+								<span class="halftab">@Model.Category.Name.ToUpper()</span>
 							</h6>
 						</div>
 

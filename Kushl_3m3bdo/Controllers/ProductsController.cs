@@ -49,7 +49,7 @@ namespace Kushl_3m3bdo.Controllers
 		        if (newProduct.UPCNumber != null)
 		        {
 			        var oldProduct =
-				        await _unitOfWork.Products.FindExpressionAsync(p => p.UPCNumber == newProduct.UPCNumber);
+				        await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
 
 			        if (oldProduct != null)
 			        {
@@ -69,6 +69,7 @@ namespace Kushl_3m3bdo.Controllers
 		        }
 
 		        await _unitOfWork.Products.AddAsync(newProduct);
+		        await _unitOfWork.SaveAsync();
 		        return RedirectToAction(nameof(Index));
 			}
 	        else
@@ -84,14 +85,11 @@ namespace Kushl_3m3bdo.Controllers
 		{
 			// First Ways
 			//var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
-
 			//var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
-	        
 			//ViewData["ProductCategory"] = Category.Name;
 
 			// Second Way
-	        var target = await _unitOfWork.Products.FindExpressionAsync(p => p.Id == Id,new[] { "Category" });
-	        ViewData["ProductCategory"] = target.Category.Name;
+	        var target = await _unitOfWork.Products.FindAsync(p => p.Id == Id,new[] { "Category" });
 
 			return View(target);
         }
@@ -148,7 +146,7 @@ namespace Kushl_3m3bdo.Controllers
             if (oldProduct.UPCNumber != newProduct.UPCNumber)
             {
 	            var uniqueUPC =
-		            await _unitOfWork.Products.FindExpressionAsync(p => p.UPCNumber == newProduct.UPCNumber);
+		            await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
 
                 if (uniqueUPC != null)
                 {
@@ -166,7 +164,7 @@ namespace Kushl_3m3bdo.Controllers
         [HttpGet]
         public async Task<IActionResult> FilterByCategory(int categoryId)
         {
-			var TargetProducts = await _unitOfWork.Products.FindAllExpressionAsync(p => p.CategoryId == categoryId);
+	        var TargetProducts = await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId);
 			return View("Index",TargetProducts);
         }
 
@@ -174,7 +172,8 @@ namespace Kushl_3m3bdo.Controllers
         [Authorize(Roles = "Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Remove(int ProductId)
 		{
-			await _unitOfWork.Products.RemoveWithIdAsync(ProductId);
+			await _unitOfWork.Products.RemoveByIdAsync(ProductId);
+			await _unitOfWork.SaveAsync();
 			return RedirectToAction(nameof(Index));
         }
 
