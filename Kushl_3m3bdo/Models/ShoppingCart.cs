@@ -8,7 +8,7 @@ namespace Kushl_3m3bdo.Models
 	{
 		public int Id { get; set; }
 		[Range(1, 100, ErrorMessage = "Please enter a value between 1 and 100")]
-		public int Count { get; set; }
+		public int Quantity { get; set; }
 
 		//--------------------------------------------------------
 

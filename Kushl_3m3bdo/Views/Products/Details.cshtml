@@ -93,7 +93,7 @@
 								<div>@Model.Discount %</div>
 							</div>
 							<div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
-								<div>@((Model.Price * (1 - Model.Discount / 100)).ToString("C2"))</div>
+								<div>@((Model.Price * (decimal)(1 - Model.Discount / 100)).ToString("C2"))</div>
 							</div>
 						</div>
 

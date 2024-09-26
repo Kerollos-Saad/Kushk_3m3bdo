@@ -116,7 +116,7 @@
 								<div id="DiscountDisplay">@Model.Discount %</div>
 							</div>
 							<div class="p-1 col-3 col-lg-3 bg-white text-warning fw-bold">
-								<div id="FinalPriceDisplay">@(Model.Price * (1 - Model.Discount / 100))</div>
+								<div id="FinalPriceDisplay">@(Model.Price * (decimal)(1 - Model.Discount / 100))</div>
 							</div>
 						</div>
 

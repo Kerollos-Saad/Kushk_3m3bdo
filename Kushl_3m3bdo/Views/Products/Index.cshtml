@@ -80,7 +80,7 @@
 									<p class="text-dark text-opacity-75 text-center">
 										After Discount:
 										<span class="text-danger">
-											<b>@((product.Price * (1 - product.Discount / 100)).ToString("c"))</b>
+											<b>@((product.Price * (decimal)(1 - product.Discount / 100)).ToString("c"))</b>
 										</span>
 									</p>
 								</div>

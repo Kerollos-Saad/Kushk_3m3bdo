@@ -10,9 +10,9 @@ namespace Kushl_3m3bdo.Models
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string? Description { get; set; }
-		public double Price { get; set; }
-		
-		[Range(0, 100)] 
+		public decimal Price { get; set; }
+
+		[Range(0, 100, ErrorMessage = "Discount Should Between 0-100%")]
 		public double Discount { get; set; } = 0.0;
 
 		[UPCValidation]

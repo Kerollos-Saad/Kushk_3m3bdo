@@ -1,13 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Kushl_3m3bdo.Models
 {
 	public class OrderDetail
 	{
+		// { User Purchases }
 		public int Id { get; set; }
-		public int Count { get; set; }
+		public int Quantity { get; set; }
 		public decimal Price { get; set; }
+		public double Discount { get; set; }
 
 		//--------------------------------------------------------
 

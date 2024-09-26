@@ -8,7 +8,7 @@ namespace Kushl_3m3bdo.Models
 		public int Id { get; set; }
 
 		public DateTime OrderDate { get; set; }
-		public double OrderTotal { get; set; }
+		public decimal OrderTotal { get; set; }
 
 		public String? OrderStatus { get; set; }
 		public String? PaymentStatus { get; set; }
