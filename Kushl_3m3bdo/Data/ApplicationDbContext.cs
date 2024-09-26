@@ -37,5 +37,8 @@ namespace Kushl_3m3bdo.Data
 		public DbSet<Wallet> Wallets { get; set; }
 		public DbSet<UserPurchase> UserPurchases { get; set; }
 
+		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+		public DbSet<OrderHeader> OrderHeaders { get; set; }
+		public DbSet<OrderDetail> OrderDetails { get; set; }
 	}
 }
