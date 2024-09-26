@@ -75,6 +75,7 @@ namespace Kushl_3m3bdo.Controllers
 			}
 
 			await _unitOfWork.Categories.AddAsync(newCategory);
+			await _unitOfWork.SaveAsync();
 
 			return RedirectToAction(nameof(Index));
 		}
