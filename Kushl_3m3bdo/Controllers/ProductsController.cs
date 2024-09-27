@@ -3,16 +3,29 @@ using Kushl_3m3bdo.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Security.Claims;
 
 namespace Kushl_3m3bdo.Controllers
 {
 	public class ProductsController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IApplicationUserRepository _userRepository;
 
-		public ProductsController(IUnitOfWork unitOfWork)
+		public ProductsController(IUnitOfWork unitOfWork, IApplicationUserRepository userRepository)
 		{
 			this._unitOfWork = unitOfWork;
+			this._userRepository = userRepository;
+		}
+
+		public async Task<ApplicationUser> GetCurrentUser()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			ApplicationUser applicationUser = await _userRepository.GetById(userId);
+
+			return applicationUser;
 		}
 
 		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
@@ -34,8 +47,8 @@ namespace Kushl_3m3bdo.Controllers
         {
 	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
-			return View(new Product());
-        }
+			return View(new Product()); // new product object created server-side So no need to set to 0 after post
+		}
 
         [HttpPost]
         [Authorize(Roles = "Admin,SubAdmin,Manager")]
@@ -80,19 +93,46 @@ namespace Kushl_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
-		public async Task<IActionResult> Details(int Id)
+		public async Task<IActionResult> Details(int id)
 		{
-			// First Ways
-			//var targetProduct = await _unitOfWork.Products.GetByIdAsync(Id);
-			//var Category = await _unitOfWork.Categories.GetByIdNullable(targetProduct.CategoryId);
-			//ViewData["ProductCategory"] = Category.Name;
+			ShoppingCart cart = new()
+			{
+				Product = await _unitOfWork.Products.FindAsync(p => p.Id == id, new[] { "Category" }),
+				ProductId = id,
+				Quantity = 1
+			};
 
-			// Second Way
-	        var target = await _unitOfWork.Products.FindAsync(p => p.Id == Id,new[] { "Category" });
-
-			return View(target);
+			return View(cart);
         }
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize]
+		public async Task<IActionResult> Details(ShoppingCart shoppingCart)
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			shoppingCart.Id = 0; // ensures it's a new record to generate new Id Cause it's return from web form
+			shoppingCart.ApplicationUserId = currentUser.Id;
+
+			ShoppingCart cartFromDb = await _unitOfWork.ShoppingCarts.FindAsync(c =>
+				c.ApplicationUserId == currentUser.Id &&
+				c.ProductId == shoppingCart.ProductId);
+
+			if (cartFromDb != null)
+			{
+				cartFromDb.Quantity += shoppingCart.Quantity;
+				await _unitOfWork.ShoppingCarts.Update(cartFromDb);
+			}
+			else
+			{
+				await _unitOfWork.ShoppingCarts.AddAsync(shoppingCart);
+			}
+
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
 
 		[HttpGet]
 		[Authorize(Roles = "Admin,SubAdmin,Manager")]

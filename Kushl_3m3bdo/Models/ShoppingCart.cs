@@ -27,6 +27,6 @@ namespace Kushl_3m3bdo.Models
 		//--------------------------------------------------------
 
 		[NotMapped] // Temporary & Runtime Data
-		public double Price { get; set; }
+		public decimal Price { get; set; }
 	}
 }

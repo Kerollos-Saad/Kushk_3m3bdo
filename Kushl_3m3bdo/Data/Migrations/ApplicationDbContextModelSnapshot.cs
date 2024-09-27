@@ -120,7 +120,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.OrderDetail", b =>
@@ -152,7 +152,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.OrderHeader", b =>
@@ -233,7 +233,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("SalesId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.Product", b =>
@@ -276,7 +276,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.ShoppingCart", b =>
@@ -303,7 +303,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.UserPurchase", b =>
@@ -333,7 +333,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("UserPurchases");
+                    b.ToTable("UserPurchases", (string)null);
                 });
 
             modelBuilder.Entity("Kushl_3m3bdo.Models.Wallet", b =>
@@ -385,7 +385,7 @@ namespace Kushl_3m3bdo.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

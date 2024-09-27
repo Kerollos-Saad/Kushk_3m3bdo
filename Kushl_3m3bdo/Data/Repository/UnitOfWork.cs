@@ -11,6 +11,9 @@ namespace Kushl_3m3bdo.Data.Repository
 		public IProductRepository Products { get; private set; }
 		public IUserPurchaseRepository Purchases { get; private set; }
 		public IWalletRepository Wallets { get; private set; }
+		public IShoppingCartRepository ShoppingCarts { get; private set; }
+		public IOrderHeaderRepository OrderHeaders { get; private set; }
+		public IOrderDetailRepository OrderDetails { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context)
 		{
@@ -20,6 +23,9 @@ namespace Kushl_3m3bdo.Data.Repository
 			Products = new ProductRepository(_context);
 			Purchases = new UserPurchaseRepository(_context);
 			Wallets = new WalletRepository(_context);
+			ShoppingCarts = new ShoppingCartRepository(_context);
+			OrderHeaders = new OrderHeaderRepository(_context);
+			OrderDetails = new OrderDetailRepository(_context);
 		}
 
 		public void Save()

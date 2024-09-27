@@ -8,6 +8,9 @@ namespace Kushl_3m3bdo.Data.Repository.IRepository
 		IProductRepository Products { get; }
 		IUserPurchaseRepository Purchases { get; }
 		IWalletRepository Wallets { get; }
+		IShoppingCartRepository ShoppingCarts { get; }
+		IOrderHeaderRepository OrderHeaders { get; }
+		IOrderDetailRepository OrderDetails { get; }
 
 		void Save();
 		Task SaveAsync();
