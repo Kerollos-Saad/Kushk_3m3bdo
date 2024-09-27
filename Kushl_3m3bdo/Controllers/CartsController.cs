@@ -49,6 +49,54 @@ namespace Kushl_3m3bdo.Controllers
 			return View(ShoppingCartsViewModel);
 		}
 
+		public async Task<IActionResult> Plus(int cartId)
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			var cart = await _unitOfWork.ShoppingCarts.FindAsync(c =>
+				c.Id == cartId && 
+				c.ApplicationUserId == currentUser.Id);
+
+			cart.Quantity += 1;
+			//await _unitOfWork.ShoppingCarts.Update(cart); // Without needn't for explicit control
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> Minus(int cartId)
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			var cart = await _unitOfWork.ShoppingCarts.FindAsync(c =>
+				c.Id == cartId &&
+				c.ApplicationUserId == currentUser.Id);
+
+			if (cart.Quantity <= 1)
+			{
+				return RedirectToAction(nameof(Remove), new { cartId = cartId });
+			}
+
+			cart.Quantity -= 1;
+			//await _unitOfWork.ShoppingCarts.Update(cart); // Without needn't for explicit control
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> Remove(int cartId)
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			var cart = await _unitOfWork.ShoppingCarts.FindAsync(c =>
+				c.Id == cartId &&
+				c.ApplicationUserId == currentUser.Id);
+
+			await _unitOfWork.ShoppingCarts.RemoveAsync(cart);
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
 
 		private decimal GetPriceAfterDiscount(ShoppingCart cart)
 		{

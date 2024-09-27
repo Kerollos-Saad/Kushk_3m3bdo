@@ -18,26 +18,30 @@
 			</div>
 		</div>
 		<div class="card-body my-4">
-			<div class="row">
+			
+			<div class="col-md-2">
+				<a asp-controller="Products" asp-action="Index" role="button" class="btn text-white btn-sm mb-4 ms-4" data-mdb-ripple-init style="background-color: #0082ca;">
+					<i class="bi bi-backspace"></i>
+					<small>Back</small>
+				</a>
 			</div>
+
 			<div class="row mb-3 pb-3">
-				<div class="col-md-2 offset-md-1">
-					<a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary text-uppercase mb-5 btn-sm"><small>Continue Shopping</small></a>
-				</div>
+
 				<div class="col-md-10 offset-md-1">
 
 					@foreach (var item in Model.ShoppingCartList)
 					{
-						<div class="row border-bottom pb-3">
+						<div class="row border-bottom pb-3 align-content-center align-items-center justify-content-center">
 
 							<div class="d-none d-lg-block col-lg-1 text-center py-2">
 								@{
 									var imgSrc = item.Product.ProductImg != null
-									? $"data:image/*;base64,{Convert.ToBase64String(item.Product.ProductImg)}"
-									: Url.Content("~/images/Default_img.png");
+										? $"data:image/*;base64,{Convert.ToBase64String(item.Product.ProductImg)}"
+										: Url.Content("~/images/Default_img.png");
 								}
 
-								<img src="@imgSrc" class="rounded" width="100%" />
+								<img src="@imgSrc" class="rounded" width="100%"/>
 							</div>
 
 							<div class="col-12 col-lg-6 pt-md-3">
@@ -45,28 +49,31 @@
 								<p><small>@Html.Raw(item.Product.Description)</small></p>
 							</div>
 							<div class="col-12  col-lg-5 text-center row">
-								<div class="col-3 text-md-right pt-2 pt-md-4">
+
+								<div class="col-4 text-md-right pt-2 pt-md-4">
 									<h6 class="fw-semibold">
 										@item.Price.ToString("c")
 										<span class="text-muted">&nbsp;x&nbsp;</span>@item.Quantity
 									</h6>
 								</div>
-								<div class="col-6 col-sm-4 col-lg-6 pt-2">
+
+								<div class="col-5 col-sm-4 col-lg-6 pt-2">
 									<div class="w-75 btn-group" role="group">
-										<a asp-action="plus" asp-route-cartId="@item.Id" class="btn btn-outline-primary bg-gradient py-2">
+										<a asp-action="Plus" asp-route-cartId="@item.Id" class="btn btn-outline-primary bg-gradient py-2">
 											<i class="bi bi-plus-square"></i>
 										</a> &nbsp;
-										<a asp-action="minus" asp-route-cartId="@item.Id" class="btn btn-outline-primary bg-gradient py-2">
+										<a asp-action="Minus" asp-route-cartId="@item.Id" class="btn btn-outline-primary bg-gradient py-2">
 											<i class="bi bi-dash-square"></i>
 										</a>
 									</div>
-
 								</div>
-								<div class="col-3 col-sm-4 col-lg-2 offset-lg-1 text-right pt-2">
+
+								<div class="col-3 col-sm-4 col-lg-2 text-right pt-2">
 									<a asp-action="remove" asp-route-cartId="@item.Id" class="btn btn-danger bg-gradient py-2 ">
 										<i class="bi bi-trash-fill"></i>
 									</a>
 								</div>
+
 							</div>
 
 						</div>

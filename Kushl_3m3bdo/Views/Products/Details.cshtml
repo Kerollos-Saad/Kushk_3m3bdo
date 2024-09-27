@@ -1,4 +1,5 @@
-﻿@model ShoppingCart
+﻿@using Kushl_3m3bdo.Models.Consts
+@model ShoppingCart
 
 @{
 	ViewData["Title"] = "Details";
@@ -139,9 +140,11 @@
 			@* <button type="submit" class="btn btn-primary">Save</button> *@
 
 			<a asp-action="Index" class="btn btn-secondary">Back To Home</a>
-			<a asp-controller="Products" asp-action="Update" asp-route-ProductId="@Model.Id" class="btn btn-warning">Edit Product</a>
-			<a asp-controller="Products" asp-action="Remove" asp-route-ProductId="@Model.Id" class="btn btn-danger float-end deleteProduct" data-path="@Url.Action("Remove","Products", new {ProductId = @Model.Id})">Delete Product</a>
-
+			@if (User.Identity.IsAuthenticated)
+			{
+				<a asp-controller="Products" asp-action="Update" asp-route-ProductId="@Model.Id" class="btn btn-warning">Edit Product</a>
+				<a asp-controller="Products" asp-action="Remove" asp-route-ProductId="@Model.Id" class="btn btn-danger float-end deleteProduct" data-path="@Url.Action("Remove", "Products", new { ProductId = @Model.Id })">Delete Product</a>
+			}
 		</div>
 
 	</div>
