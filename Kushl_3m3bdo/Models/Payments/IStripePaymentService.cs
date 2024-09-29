@@ -1,4 +1,5 @@
 ﻿using Kushl_3m3bdo.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 using Stripe.Checkout;
 
 namespace Kushl_3m3bdo.Models.Payments
@@ -7,5 +8,7 @@ namespace Kushl_3m3bdo.Models.Payments
 	{
 		Task<Session> CreatePlanCheckoutSession(ChargeWalletPlan plan);
 		Task<Session> CreatePlanCheckoutSessionAdministration(ChargeWalletPlan plan, int walletId);
+
+		Task<Session> CreateCheckoutSessionForShoppingCart(IEnumerable<ShoppingCart> shoppingCartList, int orderHeaderId);
 	}
 }

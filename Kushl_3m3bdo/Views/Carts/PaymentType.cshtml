@@ -1,0 +1,76 @@
+﻿@{
+	ViewData["Title"] = "PaymentType";
+}
+
+<section class="bsb-pricing-2 bg-light py-5 py-xl-8 shadow-lg">
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<div class="col-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6">
+				<h3 class="fs-6 text-secondary mb-2 text-uppercase text-center">Payment Type</h3>
+				<h2 class="display-5 mb-4 mb-md-5 text-center">You Can Pay By Credit Or From Your Wallet.</h2>
+				<hr class="w-50 mx-auto mb-5 mb-xl-9 border-dark-subtle">
+			</div>
+		</div>
+	</div>
+
+	<div class="container ">
+		<div class="row gy-5 gy-lg-0 gx-xl-5">
+
+			<div class="col-12 col-lg-4 offset-lg-2">
+				<div class="card border-0 border-bottom border-primary shadow-sm">
+					<div class="card-body p-4 p-xxl-5">
+
+						<h4 class="display-3 fw-bold text-primary mb-0">Credit</h4>
+						<p class="text-secondary my-3">Visa / MasterCard</p>
+						<ul class="list-group list-group-flush mb-4">
+
+							<li class="list-group-item">
+								<span> <img src="~/images/CreditCard.png" style="height: 256px; width: 256px;" /> </span>
+							</li>
+
+						</ul>
+
+						<div class="d-grid gap-2 my-3">
+							<form asp-controller="Carts" asp-action="PaymentType" method="post">
+								<input type="hidden" name="isCredit" value="true" />
+								<div class="d-grid gap-2">
+									<button type="submit" id="SubscriptionPlan-1" class="btn btn-lg btn-outline-primary">Credit Pay</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 col-lg-4">
+				<div class="card border-0 border-bottom border-primary shadow-sm">
+					<div class="card-body p-4 p-xxl-5">
+						<h4 class="display-3 fw-bold text-primary mb-0">Wallet</h4>
+						<p class="text-secondary my-3"> / </p>
+						<ul class="list-group list-group-flush mb-4">
+
+							<li class="list-group-item">
+								<span> <img src="~/images/Wallet.png" style="height: 256px; width: 256px;" /> </span>
+							</li>
+
+						</ul>
+
+						<div class="d-grid gap-2 my-3">
+							<form asp-controller="Carts" asp-action="PaymentType" method="post">
+								<input type="hidden" name="isCredit" value="false" />
+								<div class="d-grid gap-2">
+									<button type="submit" id="SubscriptionPlan-3" class="btn btn-lg btn-outline-primary">Wallet Pay</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</section>
+

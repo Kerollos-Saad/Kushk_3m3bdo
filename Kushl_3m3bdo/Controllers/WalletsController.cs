@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kushl_3m3bdo.Controllers
 {
-    public class WalletsController : Controller
+	public class WalletsController : Controller
 	{
 
 		private readonly IUnitOfWork _unitOfWork;
@@ -65,7 +65,7 @@ namespace Kushl_3m3bdo.Controllers
 		public async Task<WalletViewModel> WalletToWalletViewModelConverter(Wallet targetWallet)
 		{
 			var user = await _userManager.FindByIdAsync(targetWallet.ApplicationUserId);
-			
+
 			var walletViewModel = await InitiateWalletViewModel(user, targetWallet);
 
 			return walletViewModel;
@@ -78,7 +78,7 @@ namespace Kushl_3m3bdo.Controllers
 			var user = await _userManager.GetUserAsync(User);
 
 			if (user == null)
-				return RedirectToAction("Index","Users");
+				return RedirectToAction("Index", "Users");
 
 			if (user.WalletId != null)
 			{
@@ -201,13 +201,31 @@ namespace Kushl_3m3bdo.Controllers
 		[HttpGet]
 		[AutoValidateAntiforgeryToken]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin + "," + Roles.Role_SubAdmin)]
-		public async Task<IActionResult> WalletX(int walletId)
+		public async Task<IActionResult> WalletX(int walletId, String? userId)
 		{
+			if (walletId == 0)
+			{
+				var user = await _userManager.FindByIdAsync(userId);
+				var WalletVM = new WalletViewModel
+				{
+					UserId = user.Id,
+					UserName = user.UserName,
+					Email = user.Email,
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					ProfilePicture = user.ProfilePic
+				};
+
+				return View(nameof(Index), WalletVM);
+			}
+
+			// User Have Wallet
 			var targetWallet = await _unitOfWork.Wallets.GetByIdAsync(walletId);
 
 			var targetWalletViewModel = await WalletToWalletViewModelConverter(targetWallet);
 
 			return View("Index", targetWalletViewModel);
+
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Kushl_3m3bdo.Data.Repository.IRepository;
+﻿using System.Linq.Expressions;
+using Kushl_3m3bdo.Data.Repository.IRepository;
 using Kushl_3m3bdo.Models;
 using Kushl_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -32,6 +33,21 @@ namespace Kushl_3m3bdo.Data.Repository
 
 			return users;
 		}
+
+		public async Task<IEnumerable<ApplicationUser>> GetApplicationUsers(Expression<Func<ApplicationUser, bool>>? filter, string[] includeProperties = null)
+		{
+			IQueryable<ApplicationUser> query = _userManager.Users;
+
+			includeProperties ??= Array.Empty<string>();
+			foreach (var property in includeProperties)
+				query = query.Include(property);
+
+			if(filter != null)
+				query = query.Where(filter);
+
+			return await query.ToListAsync();
+		}
+
 
 		public async Task<ApplicationUser> GetById(string UserId)
 		{
