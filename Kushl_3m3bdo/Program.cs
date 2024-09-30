@@ -52,6 +52,14 @@ namespace Kushl_3m3bdo
 			// Register Unit Of Work
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+			// Handel Cycle Reference At Json Data Cause It's Make an Error at Datatables 
+			builder.Services.AddControllersWithViews()
+				.AddJsonOptions(options =>
+				{
+					options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+					options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+				});
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

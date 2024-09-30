@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Security.Claims;
+using Kushl_3m3bdo.Models.Consts;
 
 namespace Kushl_3m3bdo.Controllers
 {
@@ -216,6 +217,43 @@ namespace Kushl_3m3bdo.Controllers
 			await _unitOfWork.SaveAsync();
 			return RedirectToAction(nameof(Index));
         }
+
+		#region DataTables API CALLS 
+		// Cancelled
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager)]
+		public async Task<IActionResult> ProductInfo()
+		{
+			//var products = await _unitOfWork.Products.FindAllAsync(null, null, null, new[] { "Category" });
+			//var productObj = products.Select(p => new
+			//{
+			//	p.Id, 
+			//	p.Name, 
+			//	p.Description, 
+			//	p.Price, 
+			//	p.Discount,
+			//	upcNumber = p.UPCNumber.ToString(),
+			//	p.Company, 
+			//	p.Country,
+			//	categoryId = p.Category.Id,
+			//	categoryName = p.Category.Name
+			//}).ToList();
+
+			return View();
+		}
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager)]
+		public async Task<IActionResult> GetAll()
+		{
+			var products = await
+				_unitOfWork.Products.FindAllAsync(null, null, null, new[] { "Category" });
+
+			//return Json(products);
+			return Json(new { data = products });
+		}
+
+		#endregion
+
 
 	}
 }
