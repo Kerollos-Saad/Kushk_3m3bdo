@@ -1,0 +1,12 @@
+﻿.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Set the card width */
+    grid-auto-rows: auto; /* Rows will take the height of their content */
+    grid-gap: 20px; /* Add some gap between cards */
+}
+
+@media (min-width: 992px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust for larger screens */
+    }
+}
