@@ -102,10 +102,11 @@ namespace Kushk_3m3bdo.Models.Payments
 			{
 				//var baseUrl = "https://faf6-102-43-232-202.ngrok-free.app"; // ngrok
 
-				var baseUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}";
-				var imageUrl = $"{baseUrl}/carts/GetProductImage?productId={item.Product.Id}";
+				//var baseUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host.Value}";
+				//var imageUrl = $"{baseUrl}/carts/GetProductImage?productId={item.Product.Id}";
 
 				//var imageUrl = "https://via.placeholder.com/150";
+				var imageUrl = "https://cdn.apartmenttherapy.info/image/upload/f_auto,q_auto:eco,w_730/k%2FDesign%2F2023-02%2Fgrocery-spotter%2Fgrocery-spotter-inpost-feb";
 
 				var sessionLineItem = new SessionLineItemOptions
 				{

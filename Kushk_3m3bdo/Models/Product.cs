@@ -10,6 +10,7 @@ namespace Kushk_3m3bdo.Models
 		public int Id { get; set; }
 		public string Name { get; set; }
 		public string? Description { get; set; }
+		public string? ProductImgUrl { get; set; }
 		public decimal Price { get; set; }
 
 		[Range(0, 100, ErrorMessage = "Discount Should Between 0-100%")]

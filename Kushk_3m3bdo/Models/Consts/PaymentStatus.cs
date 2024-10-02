@@ -7,6 +7,8 @@
 		public const String PaymentStatusApproved = "Approved";
 		public const String PaymentStatusRejected = "Rejected";
 		public const String PaymentStatusCancelled = "Cancelled";
+		public const String PaymentStatusRefunded = "Refunded";
+
 
 	}
 }

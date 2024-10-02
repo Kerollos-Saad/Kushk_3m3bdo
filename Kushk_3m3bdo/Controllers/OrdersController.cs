@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Kushk_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Kushk_3m3bdo.Data.Repository;
+using Stripe;
 using Stripe.Climate;
 
 namespace Kushk_3m3bdo.Controllers
@@ -104,6 +105,38 @@ namespace Kushk_3m3bdo.Controllers
 
 			return RedirectToAction(nameof(Details), new { orderId = OrderViewModel.OrderHeader.Id });
 
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin + "," + Roles.Role_SubAdmin)]
+		public async Task<IActionResult> CancelOrder()
+		{
+			var orderHeaderFromDb = await _unitOfWork.OrderHeaders.FindAsync(h => h.Id == OrderViewModel.OrderHeader.Id);
+
+			if (orderHeaderFromDb.PaymentStatus == PaymentStatus.PaymentStatusApproved)
+			{
+				var options = new RefundCreateOptions
+				{
+					Reason = RefundReasons.RequestedByCustomer,
+					PaymentIntent = orderHeaderFromDb.PaymentIntentId
+				};
+
+				var service = new RefundService();
+				Refund refund = await service.CreateAsync(options);
+
+				await _unitOfWork.OrderHeaders.UpdateStatus(orderHeaderFromDb.Id, OrderStatus.StatusCancelled,
+					PaymentStatus.PaymentStatusRefunded);
+			}
+			else
+			{
+				await _unitOfWork.OrderHeaders.UpdateStatus(orderHeaderFromDb.Id, OrderStatus.StatusCancelled,
+					PaymentStatus.PaymentStatusCancelled);
+			}
+
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Details), new { orderId = OrderViewModel.OrderHeader.Id });
 		}
 
 		#region DATATABLES 
