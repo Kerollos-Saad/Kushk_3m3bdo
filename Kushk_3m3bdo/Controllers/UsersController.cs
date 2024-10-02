@@ -69,7 +69,7 @@ namespace Kushk_3m3bdo.Controllers
 				
 				if (!role.IsSelected && userRoles.Any(r => r == role.RoleName))
 				{
-					var rm = _userRepository.RemoveUserToRole(user, role.RoleName);
+					await _userRepository.RemoveUserToRole(user, role.RoleName);
 				}
 				
 			}
