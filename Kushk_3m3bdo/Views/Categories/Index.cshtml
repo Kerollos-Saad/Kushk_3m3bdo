@@ -35,7 +35,7 @@
 				if (productsPerCategory != null && productsPerCategory.ContainsKey(category.Id))
 					productCount = productsPerCategory[category.Id];
 			}
-			<td><img class="avatar rounded-circle" alt="Logo" src=@CateogryImg class="img-fluid"/></td>
+				<td><img class="avatar rounded" style="width: 45px; height: 45px " alt="Logo" src=@CateogryImg class="img-fluid" /></td>
 			<td>
 				<b>@productCount</b>
 				<a asp-controller="Products" asp-action="FilterByCategory" asp-route-categoryId="@category.Id" class="btn btn-outline-info ms-3">Show Products</a>

@@ -52,7 +52,7 @@ namespace Kushk_3m3bdo
 			// Register Unit Of Work
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-			// Handel Cycle Reference At Json Data Cause It's Make an Error at Datatables 
+			// Handel Cycle Reference At Json Data Cause It's Make an Error at DataTables 
 			builder.Services.AddControllersWithViews()
 				.AddJsonOptions(options =>
 				{
