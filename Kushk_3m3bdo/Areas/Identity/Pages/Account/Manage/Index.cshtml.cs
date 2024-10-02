@@ -68,6 +68,11 @@ namespace Kushk_3m3bdo.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            public string City { get; set; }
+            public string State { get; set; }
+            public string StreetAddress { get; set; }
+            public string ZipCode { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -82,7 +87,11 @@ namespace Kushk_3m3bdo.Areas.Identity.Pages.Account.Manage
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 ProfilePic = user.ProfilePic,
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                City = user.City,
+                State = user.State,
+                StreetAddress = user.StreetAddress,
+                ZipCode = user.ZipCode,
             };
         }
 
@@ -127,16 +136,36 @@ namespace Kushk_3m3bdo.Areas.Identity.Pages.Account.Manage
             if (Input.FirstName != user.FirstName)
             {
                 user.FirstName = Input.FirstName;
-                await _userManager.UpdateAsync(user);
             }
 
             if (Input.LastName != user.LastName)
             {
                 user.LastName = Input.LastName;
-                await _userManager.UpdateAsync(user);
             }
 
-            if (Request.Form.Files.Count > 0)
+            if (Input.City != user.City)
+            {
+                user.City = Input.City;
+            }
+
+            if (Input.State != user.State)
+            {
+                user.State = Input.State;
+            }
+
+            if (Input.StreetAddress != user.StreetAddress)
+            {
+                user.StreetAddress = Input.StreetAddress;
+            }
+
+            if (Input.ZipCode != user.ZipCode)
+            {
+                user.ZipCode = Input.ZipCode;
+            }
+
+            await _userManager.UpdateAsync(user);
+
+			if (Request.Form.Files.Count > 0)
             {
                 IFormFile image = Request.Form.Files.FirstOrDefault();
 

@@ -32,6 +32,13 @@ namespace Kushk_3m3bdo
 
 			builder.Services.AddControllersWithViews();
 
+			builder.Services.ConfigureApplicationCookie(options =>
+			{
+				options.LoginPath = $"/Identity/Account/LoginSpecial";
+				options.LogoutPath = $"/Identity/Account/Logout";
+				options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+			});
+
 			// Subscribe Stripe Service By Keys
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
