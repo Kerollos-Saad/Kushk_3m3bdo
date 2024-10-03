@@ -23,6 +23,8 @@ namespace Kushk_3m3bdo.Models
 		public string? Country { get; set; }
 
 		public byte[]? ProductImg { get; set; }
+		public bool IsDeleted { get; set; } = false;
+
 
 		[ForeignKey("Category")] 
 		public int? CategoryId { get; set; }

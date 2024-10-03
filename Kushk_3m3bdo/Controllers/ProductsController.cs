@@ -19,7 +19,7 @@ namespace Kushk_3m3bdo.Controllers
 			this._userRepository = userRepository;
 		}
 
-		public async Task<ApplicationUser> GetCurrentUser()
+		private async Task<ApplicationUser> GetCurrentUser()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -29,12 +29,11 @@ namespace Kushk_3m3bdo.Controllers
 			return applicationUser;
 		}
 
-		//[Authorize(Roles = "User,Admin,SubAdmin,Manager")]
 		public async Task<IActionResult> Index(string searchString)
 		{
 			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
-			var products = await _unitOfWork.Products.GetAllAsync();
+			var products = await _unitOfWork.Products.FindAllAsync(p => !p.IsDeleted);
 
             if (!String.IsNullOrEmpty(searchString))
 	            products = products.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
@@ -43,8 +42,8 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		[Authorize(Roles = "Admin,SubAdmin,Manager")]
-        public async Task<IActionResult> Add()
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		public async Task<IActionResult> Add()
         {
 	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
@@ -52,8 +51,8 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
         [HttpPost]
-        [Authorize(Roles = "Admin,SubAdmin,Manager")]
-		[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
         public async Task<IActionResult> Add(Product newProduct)
         {
 	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
@@ -132,11 +131,47 @@ namespace Kushk_3m3bdo.Controllers
 
 			await _unitOfWork.SaveAsync();
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(Index), "Carts");
 		}
 
 		[HttpGet]
-		[Authorize(Roles = "Admin,SubAdmin,Manager")]
+		[Authorize]
+		public async Task<IActionResult> AddToCart(int id, int quantity)
+		{
+			ShoppingCart cart = new()
+			{
+				Product = await _unitOfWork.Products.FindAsync(p => p.Id == id, new[] { "Category" }),
+				ProductId = id,
+				Quantity = quantity
+			};
+
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			cart.Id = 0; // ensures it's a new record to generate new Id Cause it's return from web form
+			cart.ApplicationUserId = currentUser.Id;
+
+			ShoppingCart cartFromDb = await _unitOfWork.ShoppingCarts.FindAsync(c =>
+				c.ApplicationUserId == currentUser.Id &&
+				c.ProductId == cart.ProductId);
+
+			if (cartFromDb != null)
+			{
+				cartFromDb.Quantity += cart.Quantity;
+				await _unitOfWork.ShoppingCarts.Update(cartFromDb);
+			}
+			else
+			{
+				await _unitOfWork.ShoppingCarts.AddAsync(cart);
+			}
+
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index), "Carts");
+
+		}
+
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Update(int ProductId)
 		{
 			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
@@ -146,7 +181,7 @@ namespace Kushk_3m3bdo.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,SubAdmin,Manager")]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
         public async Task<IActionResult> Update(Product newProduct)
         {
             ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
@@ -210,13 +245,52 @@ namespace Kushk_3m3bdo.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,SubAdmin,Manager")]
-		public async Task<IActionResult> Remove(int ProductId)
+        [Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		public async Task<IActionResult> Remove(int productId)
 		{
-			await _unitOfWork.Products.RemoveByIdAsync(ProductId);
-			await _unitOfWork.SaveAsync();
-			return RedirectToAction(nameof(Index));
-        }
+			// Hard Remove Can't Process Cause REFERENCE constraint "FK_OrderDetails_Products_ProductId"
+			//await _unitOfWork.Products.RemoveByIdAsync(ProductId);
+			//await _unitOfWork.SaveAsync();
+
+			// Soft Delete
+			var targetProduct = await _unitOfWork.Products.FindAsync(p => p.Id == productId);
+			if (targetProduct != null && targetProduct.IsDeleted == false)
+			{
+				targetProduct.IsDeleted = true;
+				await _unitOfWork.SaveAsync();
+				return RedirectToAction(nameof(Index));
+			}
+			else
+			{
+				return NotFound();
+			}
+		}
+
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		public async Task<IActionResult> ReBack(int productId)
+		{
+			var targetProduct = await _unitOfWork.Products.FindAsync(p => p.Id == productId);
+			if (targetProduct != null && targetProduct.IsDeleted == true)
+			{
+				targetProduct.IsDeleted = false;
+				await _unitOfWork.SaveAsync();
+				return RedirectToAction(nameof(Index));
+			}
+			else
+			{
+				return NotFound();
+			}
+		}
+
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		public async Task<IActionResult> RemovedProducts()
+		{
+			var targetProducts = await _unitOfWork.Products.FindAllAsync(p => p.IsDeleted);
+			return View(nameof(Index), targetProducts);
+		}
+
 
 		#region DataTables API CALLS 
 		// Cancelled

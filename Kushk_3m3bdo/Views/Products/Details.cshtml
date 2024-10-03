@@ -142,8 +142,15 @@
 			<a asp-action="Index" class="btn btn-secondary">Back To Home</a>
 			@if (User.Identity.IsAuthenticated)
 			{
-				<a asp-controller="Products" asp-action="Update" asp-route-ProductId="@Model.Id" class="btn btn-warning">Edit Product</a>
-				<a asp-controller="Products" asp-action="Remove" asp-route-ProductId="@Model.Id" class="btn btn-danger float-end deleteProduct" data-path="@Url.Action("Remove", "Products", new { ProductId = @Model.Id })">Delete Product</a>
+				<a asp-controller="Products" asp-action="Update" asp-route-productId="@Model.ProductId" class="btn btn-warning">Edit Product</a>
+				@if (!Model.Product.IsDeleted)
+				{
+					<a asp-controller="Products" asp-action="Remove" asp-route-productId="@Model.ProductId" class="btn btn-danger float-end deleteProduct" data-path="@Url.Action("Remove", "Products", new { productId = @Model.ProductId })">Delete Product</a>
+				}
+				else
+				{
+					<a id="backProduct" type="button" class="btn btn-success float-end">Back This Product</a>
+				}
 			}
 		</div>
 
@@ -169,6 +176,9 @@
 </div>
 
 @section Scripts {
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<partial name="_ValidationScriptsPartial" />
 	<script type="text/javascript">
 		var pathToDelete;
@@ -185,4 +195,37 @@
 		});
 
 	</script>
+	<script>
+		document.getElementById("backProduct").addEventListener("click", function (event) {
+			// Prevent default form submission (if necessary)
+			event.preventDefault();
+
+			// Show the SweetAlert2 dialog with two choices
+			Swal.fire({
+				icon: "question",
+				title: "Product Status...",
+				text: "You can be able to revert this!",
+				showCloseButton: true,
+				showCancelButton: true,
+				confirmButtonText: "ReBack This Product",
+				confirmButtonColor: "#3085d6",
+			}).then((result) => {
+				// Based on user choice, redirect to the correct action
+				if (result.isConfirmed) {
+					Swal.fire({
+						title: "Product is Back!",
+						text: "Your Product Now Available Again!.",
+						icon: "success",
+					});
+					
+					// Delay the redirection by 2 seconds (2000 milliseconds)
+					setTimeout(() => {
+						// Redirect to the PickUser action for administration orders
+						window.location.href = '@Url.Action("ReBack", "Products", new { productId = @Model.ProductId })';
+					}, 1500);
+				}
+			});
+		});
+	</script>
 }
+
