@@ -171,6 +171,16 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> AddFavourite(int id)
+		{
+			ApplicationUser currentUser = await GetCurrentUser();
+
+			return Json(id.ToString() + currentUser.Id.ToString());
+
+		}
+
+		[HttpGet]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Update(int ProductId)
 		{
@@ -238,6 +248,7 @@ namespace Kushk_3m3bdo.Controllers
         }
 
         [HttpGet]
+		[Authorize]
         public async Task<IActionResult> FilterByCategory(int categoryId)
         {
 	        var TargetProducts = await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId);

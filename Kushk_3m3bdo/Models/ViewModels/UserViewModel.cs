@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Kushk_3m3bdo.Models.ViewModels
 {
@@ -13,5 +14,8 @@ namespace Kushk_3m3bdo.Models.ViewModels
         public byte[] ProfilePicture { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
+
+        [NotMapped]
+        public Wallet? userWallet { get; set; }
     }
 }

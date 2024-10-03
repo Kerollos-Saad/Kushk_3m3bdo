@@ -4,6 +4,7 @@ using Kushk_3m3bdo.Models;
 using Kushk_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace Kushk_3m3bdo.Data.Repository
@@ -29,6 +30,30 @@ namespace Kushk_3m3bdo.Data.Repository
 					Email = user.Email,
 					ProfilePicture = user.ProfilePic,
 					Roles = _userManager.GetRolesAsync(user).Result
+				}).ToList();
+
+			return users;
+		}
+
+		public async Task<IEnumerable<String>> GetUserRoles(String userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+			return await _userManager.GetRolesAsync(user);
+		}
+
+		public async Task<IEnumerable<UserViewModel>> GetUsersWithRolesAndWallet()
+		{
+			var users = _userManager.Users.Include("Wallet").Select(
+				user => new UserViewModel
+				{
+					Id = user.Id,
+					FirstName = user.FirstName,
+					LastName = user.LastName,
+					UserName = user.UserName,
+					Email = user.Email,
+					ProfilePicture = user.ProfilePic,
+					Roles = _userManager.GetRolesAsync(user).Result,
+					userWallet = user.Wallet
 				}).ToList();
 
 			return users;

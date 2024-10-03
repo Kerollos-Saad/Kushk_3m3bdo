@@ -7,6 +7,9 @@ namespace Kushk_3m3bdo.Data.Repository.IRepository
     public interface IApplicationUserRepository
 	{
 		Task<IEnumerable<UserViewModel>> GetUsers();
+		Task<IEnumerable<String>> GetUserRoles(String userId);
+		Task<IEnumerable<UserViewModel>> GetUsersWithRolesAndWallet();
+
 		Task<IEnumerable<ApplicationUser>> GetApplicationUsers(Expression<Func<ApplicationUser, bool>>? filter, string[] includeProperties = null);
 		Task<ApplicationUser> GetById(string UserId);
 
