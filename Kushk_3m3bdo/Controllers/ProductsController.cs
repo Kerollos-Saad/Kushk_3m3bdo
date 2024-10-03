@@ -252,7 +252,12 @@ namespace Kushk_3m3bdo.Controllers
 		[Authorize]
         public async Task<IActionResult> FilterByCategory(int categoryId)
         {
-	        var TargetProducts = await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId);
+	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
+
+			var TargetProducts =
+		        await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId && !p.IsDeleted);
+
+
 			return View("Index",TargetProducts);
         }
 

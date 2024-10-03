@@ -30,7 +30,7 @@
 								<p class="mb-3 text-white">$ @walletAmount</p>
 								<p class="mb-3 text-white">@user.Email</p>
 
-								<div class="d-grid">
+								<div class="d-grid div-Hover">
 									<a asp-controller="Carts" asp-action="Summary" asp-route-userId="@user.Id" class="btn btn-dark radius-15">Select User</a>
 								</div>
 							</div>
@@ -103,6 +103,16 @@
 
 </div>
 
+<style>
+	div.div-Hover {
+		transition: transform 0.2s ease-in-out;
+	}
+
+	div.div-Hover:hover {
+		transform: scale(1.08);
+	}
+</style>
+
 @section Scripts
 {
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css">
@@ -112,7 +122,7 @@
 		function applyRandomBg() {
 			// Array of background color classes
 			// const bgClasses = ['bg-x1', 'bg-x2', 'bg-x3', 'bg-x4', 'bg-x5', 'bg-x6'];
-			const bgClasses = ['bg-x7', 'bg-x8', 'bg-x9', 'bg-x10'];
+			const bgClasses = ['bg-x3', 'bg-x5', 'bg-x7', 'bg-x9', 'bg-x10'];
 
 			// Get all elements with the 'random-bg' class
 			const elements = document.querySelectorAll('.random-bg');

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Category>
+@{
+    int totalPages = ViewBag.TotalPages;
+    int currentPage = ViewBag.CurrentPage;
+}
+
+<div class="container mt-5">
+    <h3 class="fw-bold">Category</h3>
+
+    <!-- Carousel for Category -->
+    <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (var i = 0; i < Model.Count(); i++)
+            {
+                var category = Model.ElementAt(i);
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="text-center">
+                        <a href="/Categories/Details/@category.Id">
+	                        @{
+		                        string CateogryImg = @category.Logo != null
+			                        ? $"data:image/*;base64,{Convert.ToBase64String(@category.Logo)}"
+			                        : Url.Content("~/images/Default_img.png");
+	                        }
+	                        <img src="@CateogryImg" class="rounded-circle img-fluid avatar" alt="@category.Name" style="width: 100px; height: 100px; object-fit: cover;">
+                        </a>
+                        <p class="mt-2">@category.Name</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- Carousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="/Categories/Index?page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<!-- Optional: Add custom CSS for better styling -->
+<style>
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        background-color: black;
+    }
+</style>
+
+@section Scripts
+{
+	<partial name="_Layout"/>
+}

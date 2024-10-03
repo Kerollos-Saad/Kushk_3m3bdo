@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<IdentityRole>
 
 @{
-    ViewData["Title"] = "Roles";
+	ViewData["Title"] = "Roles";
 }
 
 <h1>Roles</h1>
@@ -10,25 +10,94 @@
 
 <table class="table table-striped mt-4">
 	<thead>
-		<tr class="bg-primary text-white">
-			<th>Id</th>
-			<th>Role Name</th>
-			<th>Action</th>
-		</tr>
+	<tr class="bg-primary">
+		<th class="text-white">Id</th>
+		<th class="text-white">Role Name</th>
+		<th class="text-white">Action</th>
+	</tr>
 	</thead>
 	<tbody>
-		@foreach (var role in Model)
-		{
-			<tr>
-				<td>@role.Id</td>
-				<td>@role.Name</td>
-				<td><a asp-controller="ManagerRoles" asp-action="Remove" asp-route-RoleId="@role.Id" class="btn btn-danger">Delete</a></td>
-			</tr>
-		}
+	@foreach (var role in Model)
+	{
+		<tr>
+			<td>@role.Id</td>
+			<td>@role.Name</td>
+			<td><a type="button" href="#" id="deleteRole_@role.Id" class="btn btn-danger">Delete</a></td>
+		</tr>
+	}
 	</tbody>
 </table>
+
+@* the problem is id have many - so the id was wrong *@
 
 @section Scripts
 {
 	<partial name="_ValidationScriptsPartial" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            //console.log("DOM fully loaded and parsed.");
+
+            // Select all elements with IDs starting with 'deleteRole-'
+            document.querySelectorAll("a[id^='deleteRole_']").forEach(function (input) {
+
+	            //console.log("Found delete button:", input); // Log to see if the buttons are selected
+
+                input.addEventListener('click', function (event) {
+
+                    event.preventDefault(); // Prevent default action (navigation)
+                    //console.log("Delete button clicked");
+
+                    var roleIdValue = this.id.split('_')[1];  // Extract Role ID from the element's id
+                    //console.log("Role ID:", roleIdValue);
+
+                    // const Swal = Swal.mixin({
+                    //     customClass: {
+                    //         confirmButton: "btn btn-success",
+                    //         cancelButton: "btn btn-danger"
+                    //     }
+                    // });
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        showCloseButton: true,
+                        confirmButtonColor: "#4BB543",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, cancel!",
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+	                        Swal.fire(
+                                "Deleted!",
+                                "Role has been deleted.",
+                                "success"
+                            );
+
+                            // Redirect after 1 second to remove the role
+                            setTimeout(() => {
+                                window.location.href = `/ManagerRoles/Remove?roleId=${roleIdValue}`;
+                            }, 1000);
+
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+
+	                        Swal.fire(
+                                "Cancelled",
+                                "Role can't be deleted :)",
+                                "error"
+                            );
+                        }
+                    });
+
+                });
+            });
+
+        });
+    </script>
 }

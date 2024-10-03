@@ -40,6 +40,9 @@ namespace Kushk_3m3bdo.Data.Repository
 		{
 			var role = await GetRoleById(roleId);
 
+            if (role == null)
+                return false;
+
 			var Deleted = await _roleManager.DeleteAsync(role);
 			return Deleted.Succeeded;
 		}

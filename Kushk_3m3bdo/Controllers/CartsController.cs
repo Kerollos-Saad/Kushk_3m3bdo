@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Kushk_3m3bdo.Controllers
 {
+	[Authorize]
 	public class CartsController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;

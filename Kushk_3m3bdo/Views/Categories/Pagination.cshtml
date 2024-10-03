@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Category>
+
+<div class="container mt-4">
+	<div class="d-flex justify-content-between align-items-center">
+		<h2>Category</h2>
+		<a asp-controller="categories" asp-action="index" class="btn btn-success">View All</a>
+	</div>
+
+	<div id="category-carousel" class="d-flex overflow-hidden mt-3">
+		<div class="row flex-nowrap mt-3">
+			@foreach (var category in Model)
+			{
+				<div class="col-auto text-center mx-2">
+					<a asp-controller="Products" asp-action="FilterByCategory" asp-route-categoryId="@category.Id" class="d-block text-decoration-none">
+
+						@{
+							string CateogryImg = @category.Logo != null
+								? $"data:image/*;base64,{Convert.ToBase64String(@category.Logo)}"
+								: Url.Content("~/images/Default_img.png");
+						}
+
+						<img src="@CateogryImg" alt="@category.Name" class="rounded-circle avatar" style="width: 180px; height: 180px;">
+						<p class="mt-2 fw-bold text-black h6">@category.Name</p>
+					</a>
+				</div>
+			}
+		</div>
+	</div>
+
+	<div class="d-flex justify-content-end align-items-center mt-3">
+		<button class="btn btn-light me-2" id="prev-btn">
+			<i class="bi bi-chevron-left"></i>
+		</button>
+		<button class="btn btn-light" id="next-btn">
+			<i class="bi bi-chevron-right"></i>
+		</button>
+	</div>
+</div>
+
+<style>
+	#category-carousel {
+		overflow-x: auto;
+		scroll-behavior: smooth;
+	}
+
+	#category-carousel::-webkit-scrollbar {
+		display: none; /* Hide scrollbar */
+	}
+
+	img.rounded-circle {
+		transition: transform 0.2s ease-in-out;
+	}
+
+	img.rounded-circle:hover {
+		transform: scale(1.05);
+	}
+
+</style>
+
+@section Scripts{
+	<script>
+		const prevBtn = document.getElementById('prev-btn');
+		const nextBtn = document.getElementById('next-btn');
+		const categoryCarousel = document.getElementById('category-carousel');
+
+		prevBtn.addEventListener('click', function() {
+			categoryCarousel.scrollBy({
+				left: -150,  // Adjust based on the width of your items
+				behavior: 'smooth'
+			});
+		});
+
+		nextBtn.addEventListener('click', function() {
+			categoryCarousel.scrollBy({
+				left: 150,  // Adjust based on the width of your items
+				behavior: 'smooth'
+			});
+		});
+	</script>
+
+}

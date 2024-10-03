@@ -39,7 +39,7 @@
 					<div class="col-12 p-1">
 
 
-						<div class="card border-0 p-3 shadow  border-top border-5 rounded">
+						<div class="card border-0 p-3 shadow  border-top border-5 rounded cardHover">
 
 
 							<!-- Card -->
@@ -86,6 +86,10 @@
 												<span class="text-decoration-line-through">
 													<b>@product.Price.ToString("c")</b>
 												</span>
+												<span>&nbsp;&nbsp;&nbsp;</span>
+												<span class="border px-1">
+													@product.Discount% OFF
+												</span>
 											</p>
 										</div>
 
@@ -123,7 +127,7 @@
 
 
 									<div class="col-3 p-0">
-										<input id="productQuantity-@product.Id" type="number" value="1" class="form-control text-center "
+										<input id="productQuantity-@product.Id" type="number" value="1" class="form-control text-center " min="1"
 											   aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
 									</div>
 
@@ -154,14 +158,24 @@
 	</div>
 </div>
 
+<style>
+	div.cardHover {
+		transition: transform 0.2s ease-in-out;
+	}
+
+	div.cardHover:hover {
+		transform: scale(1.10);
+	}
+</style>
+
 @section Scripts
 {
 	<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" async>
 	</script>
-	
+
 	<script>
-		document.querySelectorAll('input[id^="productQuantity-"]').forEach(function(input) {
-			input.addEventListener('input', function() {
+		document.querySelectorAll('input[id^="productQuantity-"]').forEach(function (input) {
+			input.addEventListener('input', function () {
 				var productId = this.id.split('-')[1];  // Extract the product ID from the input's id
 				var quantity = this.value;              // Get the input value
 				var addToCartBtn = document.getElementById('addToCartBtn-' + productId);  // Find the corresponding button

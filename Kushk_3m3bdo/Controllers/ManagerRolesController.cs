@@ -1,4 +1,5 @@
 ﻿using Kushk_3m3bdo.Data.Repository.IRepository;
+using Kushk_3m3bdo.Models.Consts;
 using Kushk_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kushk_3m3bdo.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = Roles.Role_Manager)]
 	public class ManagerRolesController : Controller
 	{
 		IApplicationUserRepository _userRepository;
@@ -62,14 +63,13 @@ namespace Kushk_3m3bdo.Controllers
 			}
 		}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Remove(String RoleId)
+		[HttpGet]
+		public async Task<IActionResult> Remove(String roleId)
 		{
 			if (!ModelState.IsValid)
 				return View("Index", _roleRepository.GetRoles().Result);
 
-			var isSucceeded = _roleRepository.RemoveRole(RoleId).Result;
+			var isSucceeded = _roleRepository.RemoveRole(roleId).Result;
 
 			if (isSucceeded)
 			{
