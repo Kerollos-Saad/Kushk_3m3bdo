@@ -34,11 +34,13 @@ namespace Kushk_3m3bdo.Controllers
 			return applicationUser;
 		}
 
+		[Authorize]
 		public IActionResult Index()
 		{
 			return View();
 		}
 
+		[Authorize]
 		public async Task<IActionResult> Details(int orderId)
 		{
 			OrderViewModel = new()

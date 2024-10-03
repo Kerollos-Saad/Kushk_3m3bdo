@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Printing;
 using Kushk_3m3bdo.Data.Repository.IRepository;
 using Kushk_3m3bdo.Models;
+using Kushk_3m3bdo.Models.Consts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Kushk_3m3bdo.Controllers
 {
-	[Authorize(Roles = "Manager,Admin")]
+	[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 	public class CategoriesController : Controller
 	{
 
@@ -19,7 +20,7 @@ namespace Kushk_3m3bdo.Controllers
 			this._unitOfWork = unitOfWork;
 		}
 
-		public async Task<Dictionary<int, int>> CreateProductCategoryDict()
+		private async Task<Dictionary<int, int>> CreateProductCategoryDict()
 		{
 			Dictionary<int, int> ProductNumPerCategory = new Dictionary<int, int>();
 

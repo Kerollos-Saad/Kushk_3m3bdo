@@ -1,5 +1,6 @@
 ﻿using Kushk_3m3bdo.Data.Repository.IRepository;
 using Kushk_3m3bdo.Models;
+using Kushk_3m3bdo.Models.Consts;
 using Kushk_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,16 @@ namespace Kushk_3m3bdo.Controllers
 			this._roleRepository = identityRoleReposssitory;
 		}
 
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> IndexWithoutSort()
 		{
 			var users = await _userRepository.GetUsers();
 			return View(users);
 		}
 
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Index(string sortOrder)
 		{
 			var users = await _userRepository.GetUsersWithRolesAndWallet();
@@ -66,7 +71,7 @@ namespace Kushk_3m3bdo.Controllers
 
 		}
 
-		[Authorize(Roles = "Manager")]
+		[Authorize(Roles = Roles.Role_Manager)]
 		public async Task<IActionResult> ManageRoles(string UserId)
 		{
 			var user = await _userRepository.GetById(UserId);

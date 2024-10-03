@@ -93,6 +93,7 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> Details(int id)
 		{
 			ShoppingCart cart = new()

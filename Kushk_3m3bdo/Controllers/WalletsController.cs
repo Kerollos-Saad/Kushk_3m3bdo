@@ -34,6 +34,7 @@ namespace Kushk_3m3bdo.Controllers
 			return result;
 		}
 
+		[Authorize]
 		public async Task<WalletViewModel> InitiateWalletViewModel(ApplicationUser user, Wallet targetWallet)
 		{
 			var walletViewModel = new WalletViewModel
@@ -62,6 +63,7 @@ namespace Kushk_3m3bdo.Controllers
 			return walletViewModel;
 		}
 
+		[Authorize]
 		public async Task<WalletViewModel> WalletToWalletViewModelConverter(Wallet targetWallet)
 		{
 			var user = await _userManager.FindByIdAsync(targetWallet.ApplicationUserId);
@@ -105,6 +107,7 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> CreateWallet()
 		{
 			var user = await _userManager.Users.Include(u => u.Wallet)
@@ -130,6 +133,7 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> Remove(int walletId)
 		{
 			var user = await _userManager.Users.Include(u => u.Wallet)

@@ -5,6 +5,7 @@ using Kushk_3m3bdo.Data.Repository.IRepository;
 using Kushk_3m3bdo.Models;
 using Kushk_3m3bdo.Models.Payments;
 using Kushk_3m3bdo.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -88,6 +89,7 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
         [HttpPost]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> PlanPayment(int planId, int? walletId)
         {
 	        var userWalletId = walletId;
@@ -130,6 +132,8 @@ namespace Kushk_3m3bdo.Controllers
             return Redirect(stripeSession.Url);
         }
 
+		[HttpGet]
+		[Authorize]
         public async Task<IActionResult> CheckoutSuccess(string sessionId, int planId)
         {
 	        var sessionService = new SessionService();
@@ -161,6 +165,8 @@ namespace Kushk_3m3bdo.Controllers
 			return RedirectToAction("Index","Wallets");
         }
 
+		[HttpGet]
+		[Authorize]
         public async Task<IActionResult> CheckoutSuccessAdministration(int planId, int walletId)
         {
 	        var paymentPlans = SubscriptionPlan.FetchPlans();
