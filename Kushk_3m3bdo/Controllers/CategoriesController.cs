@@ -150,13 +150,17 @@ namespace Kushk_3m3bdo.Controllers
 
 		public async Task<IActionResult> Pagination(int page = 1, int pageSize = 4)
 		{
-			var paginatedCategories = await _unitOfWork.Categories.FindAllAsync(null, (page - 1) * pageSize, pageSize);
-			ViewData["TotalPages"] = (int)Math.Ceiling((double)_unitOfWork.Categories.GetAll().Count() / pageSize);
-			ViewData["CurrentPage"] = page;
-
+			//var paginatedCategories = await _unitOfWork.Categories.FindAllAsync(null, (page - 1) * pageSize, pageSize);
+			//ViewData["TotalPages"] = (int)Math.Ceiling((double)_unitOfWork.Categories.GetAll().Count() / pageSize);
+			//ViewData["CurrentPage"] = page;
 			//return View(paginatedCategories.ToList());
 
-			return View(await _unitOfWork.Categories.FindAllAsync());
+			//return View(await _unitOfWork.Categories.FindAllAsync());
+
+			//return PartialView("_PaginationPartial", await _unitOfWork.Categories.FindAllAsync());
+
+			return View("Pagination", await _unitOfWork.Categories.FindAllAsync());
+
 		}
 
 

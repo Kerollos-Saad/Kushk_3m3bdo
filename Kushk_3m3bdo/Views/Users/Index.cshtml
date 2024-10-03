@@ -11,20 +11,20 @@
 <table class="table table-striped mt-4">
 	<thead>
 		<tr class="bg-primary text-white">
-			<th>F-L Name</th>
-			<th>Profile Pic</th>
-			<th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]" class="text-decoration-none">@Html.DisplayNameFor(model => model.UserName)</a>
+			<th class="text-white">F-L Name</th>
+			<th class="text-white">Profile Pic</th>
+			<th class="text-white">
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]" class="text-decoration-none text-white">@Html.DisplayNameFor(model => model.UserName)</a>
 			</th>
-			<th>Email Name</th>
-			<th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["WalletScoreSortParm"]" class="text-decoration-none">@Html.DisplayNameFor(model => model.userWallet.Score)</a>
+			<th class="text-white">Email Name</th>
+			<th class="text-white">
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["WalletScoreSortParm"]" class="text-decoration-none text-white">@Html.DisplayNameFor(model => model.userWallet.Score)</a>
 			</th>
-			<th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["WalletAmountSortParm"]" class="text-decoration-none">@Html.DisplayNameFor(model => model.userWallet.Amount)</a>
+			<th class="text-white">
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["WalletAmountSortParm"]" class="text-decoration-none text-white">@Html.DisplayNameFor(model => model.userWallet.Amount)</a>
 			</th>
-			<th>Roles</th>
-			<th>Actions</th>
+			<th class="text-white">Roles</th>
+			<th class="text-white">Actions</th>
 		</tr>
 	</thead>
 	<tbody>

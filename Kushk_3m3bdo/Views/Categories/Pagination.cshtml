@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Category>
 
-<div class="container mt-4">
+<div class="container mt-4" id="pagination-content">
 	<div class="d-flex justify-content-between align-items-center">
 		<h2>Category</h2>
 		<a asp-controller="categories" asp-action="index" class="btn btn-success">View All</a>
@@ -59,23 +59,35 @@
 
 @section Scripts{
 	<script>
-		const prevBtn = document.getElementById('prev-btn');
-		const nextBtn = document.getElementById('next-btn');
-		const categoryCarousel = document.getElementById('category-carousel');
+		function initializeCarousel() {
+			const prevBtn = document.getElementById('prev-btn');
+			const nextBtn = document.getElementById('next-btn');
+			const categoryCarousel = document.getElementById('category-carousel');
 
-		prevBtn.addEventListener('click', function() {
-			categoryCarousel.scrollBy({
-				left: -150,  // Adjust based on the width of your items
-				behavior: 'smooth'
-			});
+			if (prevBtn && nextBtn && categoryCarousel) {
+				prevBtn.addEventListener('click',
+					function() {
+						categoryCarousel.scrollBy({
+							left: -150, // Adjust based on the width of your items
+							behavior: 'smooth'
+						});
+					});
+
+				nextBtn.addEventListener('click',
+					function() {
+						categoryCarousel.scrollBy({
+							left: 150, // Adjust based on the width of your items
+							behavior: 'smooth'
+						});
+					});
+			}
+		}
+
+		// Call this to initialize the buttons on page load
+		// AJAX to load content dynamically
+		$(document).ready(function () {
+			initializeCarousel();  // This will work when content is loaded
 		});
 
-		nextBtn.addEventListener('click', function() {
-			categoryCarousel.scrollBy({
-				left: 150,  // Adjust based on the width of your items
-				behavior: 'smooth'
-			});
-		});
 	</script>
-
 }

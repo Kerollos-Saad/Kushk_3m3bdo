@@ -4,5 +4,38 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+	<p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    
+	@* 	<div>
+		<iframe src="@Url.Action("Pagination", "Categories")" width="100%" height="1200px"></iframe>
+	</div> *@
+	
+	@* Show Categories as Pagination *@
+	<div id="pagination-container"></div>
+
 </div>
+
+@section Scripts
+{
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$.ajax({
+				url: '@Url.Action("Pagination", "Categories")',
+				success: function(result) {
+					var htmlContent = $(result).find("#pagination-content").html();
+					
+					$("#pagination-container").html(htmlContent);
+
+					console.log(htmlContent);
+
+					// Extract and execute inline scripts from Pagination content
+					var scripts = $(result).filter("script");
+					scripts.each(function () {
+						$.globalEval(this.text); // Dynamically run each script
+					});
+					
+				}
+			});
+		});
+	</script>
+}
