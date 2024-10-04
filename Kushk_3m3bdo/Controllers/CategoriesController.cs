@@ -148,6 +148,7 @@ namespace Kushk_3m3bdo.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
+		[AllowAnonymous] // For Home Screen
 		public async Task<IActionResult> Pagination(int page = 1, int pageSize = 4)
 		{
 			//var paginatedCategories = await _unitOfWork.Categories.FindAllAsync(null, (page - 1) * pageSize, pageSize);

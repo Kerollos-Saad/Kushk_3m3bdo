@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Security.Claims;
 using Kushk_3m3bdo.Models.Consts;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Kushk_3m3bdo.Controllers
 {
@@ -96,6 +97,8 @@ namespace Kushk_3m3bdo.Controllers
 		[Authorize]
 		public async Task<IActionResult> Details(int id)
 		{
+			TempData["ProductError"] = TempData["ProductError"];
+
 			ShoppingCart cart = new()
 			{
 				Product = await _unitOfWork.Products.FindAsync(p => p.Id == id, new[] { "Category" }),
@@ -111,6 +114,14 @@ namespace Kushk_3m3bdo.Controllers
 		[Authorize]
 		public async Task<IActionResult> Details(ShoppingCart shoppingCart)
 		{
+			var product = await _unitOfWork.Products.FindAsync(p => p.Id == shoppingCart.ProductId);
+			if (product.IsDeleted)
+			{
+				TempData["ProductError"] = "This Product Was Deleted!";
+				return RedirectToAction(nameof(Details), routeValues: shoppingCart.ProductId);
+			}
+
+
 			ApplicationUser currentUser = await GetCurrentUser();
 
 			shoppingCart.Id = 0; // ensures it's a new record to generate new Id Cause it's return from web form
@@ -127,6 +138,7 @@ namespace Kushk_3m3bdo.Controllers
 			}
 			else
 			{
+				TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
 				await _unitOfWork.ShoppingCarts.AddAsync(shoppingCart);
 			}
 
@@ -139,9 +151,17 @@ namespace Kushk_3m3bdo.Controllers
 		[Authorize]
 		public async Task<IActionResult> AddToCart(int id, int quantity)
 		{
+
+			var product = await _unitOfWork.Products.FindAsync(p => p.Id == id, new[] { "Category" });
+			if (product.IsDeleted)
+			{
+				TempData["ProductError"] = "Can't Buy Deleted Products!";
+				return RedirectToAction(nameof(RemovedProducts));
+			}
+
 			ShoppingCart cart = new()
 			{
-				Product = await _unitOfWork.Products.FindAsync(p => p.Id == id, new[] { "Category" }),
+				Product = product,
 				ProductId = id,
 				Quantity = quantity
 			};
@@ -162,6 +182,7 @@ namespace Kushk_3m3bdo.Controllers
 			}
 			else
 			{
+				TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
 				await _unitOfWork.ShoppingCarts.AddAsync(cart);
 			}
 

@@ -17,6 +17,13 @@
 	</div>
 }
 
+@if (TempData["ProductError"] != null)
+{
+	<div class="text-danger my-2 text-center">
+		@TempData["ProductError"]
+	</div>
+}
+
 <form asp-controller="Products" asp-action="Index" method="get">
 	<div class="container">
 		<div class="row height d-flex justify-content-center align-items-center">

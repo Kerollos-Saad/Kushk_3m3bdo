@@ -1,4 +1,6 @@
-﻿@inject UserManager<ApplicationUser> UserManager
+﻿@using Kushk_3m3bdo.Data.Repository.IRepository
+@inject UserManager<ApplicationUser> UserManager
+@inject IUnitOfWork UnitOfWork
 
 <!DOCTYPE html>
 <html lang="en">
@@ -139,9 +141,18 @@
 							@if (User.Identity.IsAuthenticated)
 							{
 								<li class="nav-item my-2 px-3 rounded border border-3">
-									<a class="nav-link text-dark" asp-area="" asp-controller="Carts" asp-action="Index">
+									<a class="nav-link text-dark position-relative" asp-area="" asp-controller="Carts" asp-action="Index">
 										<i class="bi bi-cart3"></i>
 										Cart
+										@{
+											var carts = await UnitOfWork.ShoppingCarts.FindAllAsync(c => c.ApplicationUserId == currentUser.Id);
+											@if (carts.Count() != 0)
+											{
+												<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 60%;">
+													@carts.Count()
+												</span>
+											}
+										}
 									</a>
 								</li>
 							}

@@ -107,7 +107,7 @@
 
 						<span asp-validation-for="Quantity" class="text-danger"></span>
 
-						<div class="row pl-2 mb-3">
+						<div class="row pl-2 mb-3 mt-1">
 							<div class="col-md-4">
 								<div class="input-group mb-3">
 									<span class="input-group-text bg-primary text-white border-0 fw-semibold"
@@ -128,6 +128,12 @@
 									Add to Cart
 								</button>
 							</div>
+							@if (TempData["ProductError"]!=null)
+							{
+								<div class="text-danger">
+									@TempData["ProductError"]
+								</div>
+							}
 						</div>
 
 					</div>
