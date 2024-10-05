@@ -40,5 +40,8 @@ namespace Kushk_3m3bdo.Data
 		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 		public DbSet<OrderHeader> OrderHeaders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
+
+		public DbSet<Favourite> Favorites { get; set; }
+		public DbSet<Debit> Debits { get; set; }
 	}
 }

@@ -23,6 +23,7 @@ namespace Kushk_3m3bdo.Data.Repository
 				oldProduct.Description = newProduct.Description;
 				oldProduct.Price = newProduct.Price;
 				oldProduct.Discount = newProduct.Discount;
+				oldProduct.Stock = newProduct.Stock;
 				oldProduct.UPCNumber = newProduct.UPCNumber;
 				oldProduct.Company = newProduct.Company;
 				oldProduct.Country = newProduct.Country;

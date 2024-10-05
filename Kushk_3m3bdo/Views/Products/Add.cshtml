@@ -45,9 +45,14 @@
 							<span asp-validation-for="Price" class="text-danger"></span>
 						</div>
 						<div class="form-floating mb-3">
-							<input asp-for="Discount" type="number" class="form-control" placeholder=""/>
-							<label asp-for="Discount">Discount</label>
+							<input asp-for="Discount" type="number" class="form-control" placeholder="%"/>
+							<label asp-for="Discount">Discount %</label>
 							<span asp-validation-for="Discount" class="text-danger"></span>
+						</div>
+						<div class="form-floating mb-3">
+							<input asp-for="Stock" type="number" class="form-control" placeholder="" />
+							<label asp-for="Stock">Stock Number</label>
+							<span asp-validation-for="Stock" class="text-danger"></span>
 						</div>
 						<div class="form-floating mb-3">
 							<input asp-for="UPCNumber" type="number" class="form-control" placeholder="" />

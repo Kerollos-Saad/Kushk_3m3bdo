@@ -139,8 +139,9 @@
 									</div>
 
 									<div class="col-7 px-1">
-										<a id="addToCartBtn-@product.Id" asp-action="AddToCart" asp-route-id="@product.Id" asp-route-quantity="1"
-										   class="btn btn-success bg-gradient border-0 form-control">
+										<a id="addToCartBtn-@product.Id" href="#" 
+										   class="btn btn-success bg-gradient border-0 form-control"
+										   onclick="validateStock(event, @product.Stock, '@Url.Action("AddToCart", new { id = product.Id, quantity = 1 })')">
 											<i class="bi bi-cart3"></i>
 											Add To Cart
 										</a>
@@ -170,14 +171,33 @@
 		transition: transform 0.2s ease-in-out;
 	}
 
-	div.cardHover:hover {
-		transform: scale(1.10);
-	}
+		div.cardHover:hover {
+			transform: scale(1.10);
+		}
 </style>
 
 @section Scripts
 {
-	<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" async>
+	<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" async></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+		function validateStock(event, productStockNumber, addToCartUrl) {
+			if (productStockNumber == 0) {
+				Swal.fire({
+					icon: 'warning',
+					showCloseButton: true,
+					title: 'Oops... \n Out Of Stock',
+					text: 'This Product Will Coming Soon!',
+				});
+				event.preventDefault();  // Prevent the default action of the link
+				return false;
+			}
+        
+			// Redirect to the AddToCart action if stock is available
+			window.location.href = addToCartUrl;
+			return true;
+		}
 	</script>
 
 	<script>

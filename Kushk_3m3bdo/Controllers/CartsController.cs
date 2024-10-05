@@ -67,11 +67,20 @@ namespace Kushk_3m3bdo.Controllers
 
 			var cart = await _unitOfWork.ShoppingCarts.FindAsync(c =>
 				c.Id == cartId &&
-				c.ApplicationUserId == currentUser.Id);
+				c.ApplicationUserId == currentUser.Id, new[] { "Product" });
 
-			cart.Quantity += 1;
-			//await _unitOfWork.ShoppingCarts.Update(cart); // Without needn't for explicit control
-			await _unitOfWork.SaveAsync();
+			if (cart.Quantity + 1 <= cart.Product.Stock)
+			{
+				//cart.Product.Stock -= 1;			===>   Product Stock Will Change At Check Out
+				cart.Quantity += 1;
+
+				//await _unitOfWork.ShoppingCarts.Update(cart); // Without needn't for explicit control
+				await _unitOfWork.SaveAsync();
+			}
+			else
+			{
+				TempData["StockBecomeEmpty"] = 1;
+			}
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -359,9 +368,16 @@ namespace Kushk_3m3bdo.Controllers
 
 			IEnumerable<ShoppingCart> shoppingCarts =
 				await _unitOfWork.ShoppingCarts.FindAllAsync(c => c.ApplicationUserId == orderHeader.SalesId,
-					null, null);
+					null, null, new []{"Product"});
 
 			await _unitOfWork.ShoppingCarts.RemoveRangeAsync(shoppingCarts);
+			await _unitOfWork.SaveAsync();
+
+			foreach (var cart in shoppingCarts)
+			{
+				cart.Product.Stock -= cart.Quantity;
+			}
+
 			await _unitOfWork.SaveAsync();
 
 			return View(id);

@@ -36,8 +36,8 @@ namespace Kushk_3m3bdo.Controllers
 
 			var products = await _unitOfWork.Products.FindAllAsync(p => !p.IsDeleted);
 
-            if (!String.IsNullOrEmpty(searchString))
-	            products = products.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
+			if (!String.IsNullOrEmpty(searchString))
+				products = products.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
 
 			return View(products);
 		}
@@ -45,51 +45,51 @@ namespace Kushk_3m3bdo.Controllers
 		[HttpGet]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Add()
-        {
-	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
+		{
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			return View(new Product()); // new product object created server-side So no need to set to 0 after post
 		}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
-        public async Task<IActionResult> Add(Product newProduct)
-        {
-	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
+		public async Task<IActionResult> Add(Product newProduct)
+		{
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			if (ModelState.IsValid)
-	        {
-		        if (newProduct.UPCNumber != null)
-		        {
-			        var oldProduct =
-				        await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
+			{
+				if (newProduct.UPCNumber != null)
+				{
+					var oldProduct =
+						await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
 
-			        if (oldProduct != null)
-			        {
-				        ModelState.AddModelError("RedundantProduct", "Product UPC is Already Exist!");
-				        return View("Add", newProduct);
-			        }
-		        }
+					if (oldProduct != null)
+					{
+						ModelState.AddModelError("RedundantProduct", "Product UPC is Already Exist!");
+						return View("Add", newProduct);
+					}
+				}
 
-		        var productImg = Request.Form.Files.FirstOrDefault();
-		        if (productImg != null)
-		        {
-			        using (var dataStream = new MemoryStream())
-			        {
-				        await productImg.CopyToAsync(dataStream);
+				var productImg = Request.Form.Files.FirstOrDefault();
+				if (productImg != null)
+				{
+					using (var dataStream = new MemoryStream())
+					{
+						await productImg.CopyToAsync(dataStream);
 						newProduct.ProductImg = dataStream.ToArray();
-			        }
-		        }
+					}
+				}
 
-		        await _unitOfWork.Products.AddAsync(newProduct);
-		        await _unitOfWork.SaveAsync();
-		        return RedirectToAction(nameof(Index));
+				await _unitOfWork.Products.AddAsync(newProduct);
+				await _unitOfWork.SaveAsync();
+				return RedirectToAction(nameof(Index));
 			}
-	        else
-	        {
-		        return View("Add", newProduct);
-	        }
+			else
+			{
+				return View("Add", newProduct);
+			}
 
 		}
 
@@ -107,7 +107,7 @@ namespace Kushk_3m3bdo.Controllers
 			};
 
 			return View(cart);
-        }
+		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
@@ -131,15 +131,19 @@ namespace Kushk_3m3bdo.Controllers
 				c.ApplicationUserId == currentUser.Id &&
 				c.ProductId == shoppingCart.ProductId);
 
-			if (cartFromDb != null)
+			if (cartFromDb != null && cartFromDb.Quantity + shoppingCart.Quantity <= product.Stock)
 			{
 				cartFromDb.Quantity += shoppingCart.Quantity;
 				await _unitOfWork.ShoppingCarts.Update(cartFromDb);
 			}
+			else if (cartFromDb == null && shoppingCart.Quantity <= product.Stock)
+			{
+				//TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
+				await _unitOfWork.ShoppingCarts.AddAsync(shoppingCart);
+			}
 			else
 			{
-				TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
-				await _unitOfWork.ShoppingCarts.AddAsync(shoppingCart);
+				TempData["QuantityGreaterThanStock"] = 1;
 			}
 
 			await _unitOfWork.SaveAsync();
@@ -173,17 +177,21 @@ namespace Kushk_3m3bdo.Controllers
 
 			ShoppingCart cartFromDb = await _unitOfWork.ShoppingCarts.FindAsync(c =>
 				c.ApplicationUserId == currentUser.Id &&
-				c.ProductId == cart.ProductId);
+				c.ProductId == cart.ProductId, new []{"Product"});
 
-			if (cartFromDb != null)
+			if (cartFromDb != null && cartFromDb.Quantity + quantity <=  product.Stock)
 			{
 				cartFromDb.Quantity += cart.Quantity;
 				await _unitOfWork.ShoppingCarts.Update(cartFromDb);
 			}
+			else if (cartFromDb == null && quantity <= product.Stock)
+			{
+				//TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
+				await _unitOfWork.ShoppingCarts.AddAsync(cart);
+			}
 			else
 			{
-				TempData["CartCount"] = (int)TempData.Peek("CartCount") + 1;
-				await _unitOfWork.ShoppingCarts.AddAsync(cart);
+				TempData["QuantityGreaterThanStock"] = 1;
 			}
 
 			await _unitOfWork.SaveAsync();
@@ -214,76 +222,77 @@ namespace Kushk_3m3bdo.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
-        public async Task<IActionResult> Update(Product newProduct)
-        {
-            ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
+		public async Task<IActionResult> Update(Product newProduct)
+		{
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			if (!ModelState.IsValid)
-                return View(newProduct);
+				return View(newProduct);
 
-            var oldProduct = await _unitOfWork.Products.GetByIdAsync(newProduct.Id);
+			var oldProduct = await _unitOfWork.Products.GetByIdAsync(newProduct.Id);
 
-            var image = Request.Form.Files.FirstOrDefault();
-            if (image != null)
-            {
-                using (var dataStream = new MemoryStream())
-                {
-                    await image.CopyToAsync(dataStream);
-                    newProduct.ProductImg = dataStream.ToArray();
-                }
-            }
-            else
-            {
-                newProduct.ProductImg = oldProduct.ProductImg;
-            }
+			var image = Request.Form.Files.FirstOrDefault();
+			if (image != null)
+			{
+				using (var dataStream = new MemoryStream())
+				{
+					await image.CopyToAsync(dataStream);
+					newProduct.ProductImg = dataStream.ToArray();
+				}
+			}
+			else
+			{
+				newProduct.ProductImg = oldProduct.ProductImg;
+			}
 
-            if (oldProduct.Name == newProduct.Name &&
-                oldProduct.Description == newProduct.Description &&
-                oldProduct.Price == newProduct.Price &&
-                oldProduct.Discount == newProduct.Discount &&
-                oldProduct.UPCNumber == newProduct.UPCNumber &&
-                oldProduct.Company == newProduct.Company &&
-                oldProduct.Country == newProduct.Country &&
-                oldProduct.CategoryId == newProduct.CategoryId &&
-                oldProduct.ProductImg == newProduct.ProductImg)
-            {
-                ModelState.AddModelError("NoChanges", "No Changes on Product!");
-                return View(newProduct);
-            }
+			if (oldProduct.Name == newProduct.Name &&
+				oldProduct.Description == newProduct.Description &&
+				oldProduct.Price == newProduct.Price &&
+				oldProduct.Discount.Equals(newProduct.Discount) &&	// Double Value
+				oldProduct.Stock == newProduct.Stock &&
+				oldProduct.UPCNumber == newProduct.UPCNumber &&
+				oldProduct.Company == newProduct.Company &&
+				oldProduct.Country == newProduct.Country &&
+				oldProduct.CategoryId == newProduct.CategoryId &&
+				oldProduct.ProductImg == newProduct.ProductImg)
+			{
+				ModelState.AddModelError("NoChanges", "No Changes on Product!");
+				return View(newProduct);
+			}
 
-            if (oldProduct.UPCNumber != newProduct.UPCNumber)
-            {
-	            var uniqueUPC =
-		            await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
+			if (oldProduct.UPCNumber != newProduct.UPCNumber)
+			{
+				var uniqueUPC =
+					await _unitOfWork.Products.FindAsync(p => p.UPCNumber == newProduct.UPCNumber);
 
-                if (uniqueUPC != null)
-                {
-                    ModelState.AddModelError("RedundantUPC", "UPC Number is Already Exist!");
-                    return View(newProduct);
-                }
-            }
+				if (uniqueUPC != null)
+				{
+					ModelState.AddModelError("RedundantUPC", "UPC Number is Already Exist!");
+					return View(newProduct);
+				}
+			}
 
-            await _unitOfWork.Products.Update(newProduct);
-            await _unitOfWork.SaveAsync();
+			await _unitOfWork.Products.Update(newProduct);
+			await _unitOfWork.SaveAsync();
 
-            return RedirectToAction(nameof(Index));
-        }
+			return RedirectToAction(nameof(Index));
+		}
 
-        [HttpGet]
+		[HttpGet]
 		[Authorize]
-        public async Task<IActionResult> FilterByCategory(int categoryId)
-        {
-	        ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
+		public async Task<IActionResult> FilterByCategory(int categoryId)
+		{
+			ViewData["CategoryList"] = await _unitOfWork.Categories.GetAllAsync();
 
 			var TargetProducts =
-		        await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId && !p.IsDeleted);
+				await _unitOfWork.Products.FindAllExpressionPropAsync(p => p.CategoryId == categoryId && !p.IsDeleted);
 
 
-			return View("Index",TargetProducts);
-        }
+			return View("Index", TargetProducts);
+		}
 
-        [HttpGet]
-        [Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
+		[HttpGet]
+		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Remove(int productId)
 		{
 			// Hard Remove Can't Process Cause REFERENCE constraint "FK_OrderDetails_Products_ProductId"

@@ -13,7 +13,7 @@ namespace Kushk_3m3bdo.Models
 		public string? ProductImgUrl { get; set; }
 		public decimal Price { get; set; }
 
-		[Range(0, 100, ErrorMessage = "Discount Should Between 0-100%")]
+		[Range(0, 100, ErrorMessage = "Discount Should Between 0~100%")]
 		public double Discount { get; set; } = 0.0;
 
 		[UPCValidation]
@@ -22,6 +22,10 @@ namespace Kushk_3m3bdo.Models
 		public string? Company { get; set; }
 		public string? Country { get; set; }
 
+		[Required]
+		[Range(0,50000, ErrorMessage = "Stock Can't be 0 or Negative")]
+		public int Stock { get; set; }
+
 		public byte[]? ProductImg { get; set; }
 		public bool IsDeleted { get; set; } = false;
 
@@ -29,7 +33,5 @@ namespace Kushk_3m3bdo.Models
 		[ForeignKey("Category")] 
 		public int? CategoryId { get; set; }
 		public virtual Category? Category { get; set; }
-
-		public virtual IEnumerable<UserPurchase>? Purchases { get; set; }
 	}
 }
