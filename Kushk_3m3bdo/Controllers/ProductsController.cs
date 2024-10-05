@@ -347,7 +347,6 @@ namespace Kushk_3m3bdo.Controllers
 				};
 
 				TempData["FavouriteToggle"] = "Add To Favourites";
-
 				await _unitOfWork.Favorites.AddAsync(favouriteItem);
 			}
 			else
@@ -358,7 +357,7 @@ namespace Kushk_3m3bdo.Controllers
 
 			await _unitOfWork.SaveAsync();
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(GetFavourites));
 		}
 
 		[HttpGet]

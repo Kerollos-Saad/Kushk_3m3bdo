@@ -1,0 +1,51 @@
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+@if (TempData["success"] != null)
+{
+	<script type="text/javascript">
+		toastr.options = {
+			"positionClass": "toast-bottom-right",
+			"progressBar": true,
+			"closeButton": true,
+			"timeOut": "1500"
+		}
+		toastr.success('@TempData["success"]', "Success");
+	</script>
+}
+@if (TempData["error"] != null)
+{
+	<script type="text/javascript">
+		toastr.options = {
+			"positionClass": "toast-bottom-right",
+			"progressBar": true,
+			"closeButton": true,
+			"timeOut": "1500"
+		}
+		toastr.warning('@TempData["error"]', "Error");
+	</script>
+}
+@if (TempData["delete"] != null)
+{
+	<script type="text/javascript">
+		toastr.options = {
+			"positionClass": "toast-bottom-right",
+			"progressBar": true,
+			"closeButton": true,
+			"timeOut": "1500"
+		}
+		toastr.error('@TempData["delete"]', "Deleted");
+	</script>
+}
+@if (TempData["update"] != null)
+{
+	<script type="text/javascript">
+		toastr.options = {
+			"positionClass": "toast-bottom-right",
+			"progressBar": true,
+			"closeButton": true,
+			"timeOut": "1500"
+		}
+		toastr.info('@TempData["delete"]', "Updated");
+	</script>
+}
