@@ -99,7 +99,17 @@
 								</a>
 							</li>
 
-							@if (User.IsInRole("Manager"))
+							@if (User.Identity.IsAuthenticated)
+							{
+								<li class="nav-item my-2 px-3 rounded border border-3">
+									<a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="GetFavourites">
+										<i class="bi bi-heart"></i>
+										Favourites
+									</a>
+								</li>
+							}
+
+							@if (User.IsInRole(Roles.Role_Manager))
 							{
 								<li class="nav-item my-2 px-3 rounded border border-3">
 									<a class="nav-link text-dark" asp-area="" asp-controller="ManagerRoles" asp-action="Index">
@@ -108,7 +118,9 @@
 									</a>
 								</li>
 							}
-							@if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+
+							@if (User.IsInRole(Roles.Role_Manager) ||
+												User.IsInRole(Roles.Role_Admin))
 							{
 								<li class="nav-item my-2 px-3 rounded border border-3">
 									<a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">

@@ -14,6 +14,8 @@ namespace Kushk_3m3bdo.Data.Repository
 		public IShoppingCartRepository ShoppingCarts { get; private set; }
 		public IOrderHeaderRepository OrderHeaders { get; private set; }
 		public IOrderDetailRepository OrderDetails { get; private set; }
+		public IFavouriteRepository Favorites { get; private set; }
+		public IDebitRepository Debits { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext context)
 		{
@@ -26,6 +28,8 @@ namespace Kushk_3m3bdo.Data.Repository
 			ShoppingCarts = new ShoppingCartRepository(_context);
 			OrderHeaders = new OrderHeaderRepository(_context);
 			OrderDetails = new OrderDetailRepository(_context);
+			Favorites = new FavouriteRepository(_context);
+			Debits = new DebitRepository(_context);
 		}
 
 		public void Save()

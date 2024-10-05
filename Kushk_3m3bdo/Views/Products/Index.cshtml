@@ -1,11 +1,19 @@
 ﻿@using Azure.Core
 @model IEnumerable<Product>
 @{
-	ViewData["Title"] = "Index";
-	var WelcomeString = @Model.Any() ? "Index" : "Sorry No Products..";
+	var welcomeString = "";
+
+	if (@Model.Any())
+		if (ViewBag.ControllerFor != null)
+			welcomeString = ViewBag.ControllerFor.ToString();
+		else
+			welcomeString = "Products";
+	else
+		welcomeString = "Sorry No Products..";
+
 }
 
-<h1>@WelcomeString</h1>
+<h1>@welcomeString</h1>
 
 @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
 {
@@ -148,7 +156,7 @@
 									</div>
 
 									<div class="col-2 p-0 text-center border py-1 rounded">
-										<a asp-action="AddFavourite" asp-route-id="@product.Id">
+										<a asp-action="ToggleFavourite" asp-route-productId="@product.Id">
 											<i class="bi bi-heart-fill h4"></i>
 										</a>
 									</div>
@@ -180,6 +188,20 @@
 {
 	<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" async></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
+	<script>
+		var favouriteToggle = '@TempData["FavouriteToggle"]';
+
+		if (favouriteToggle) {
+			Swal.fire({
+				position: "top-end",
+				icon: "success",
+				title: favouriteToggle,
+				showConfirmButton: false,
+				timer: 1500
+			});
+		}
+	</script>
 
 	<script>
 		function validateStock(event, productStockNumber, addToCartUrl) {

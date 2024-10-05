@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Security.Claims;
 using Kushk_3m3bdo.Models.Consts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
 
 namespace Kushk_3m3bdo.Controllers
 {
@@ -201,16 +202,6 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
-		public async Task<IActionResult> AddFavourite(int id)
-		{
-			ApplicationUser currentUser = await GetCurrentUser();
-
-			return Json(id.ToString() + currentUser.Id.ToString());
-
-		}
-
-		[HttpGet]
 		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Update(int ProductId)
 		{
@@ -338,6 +329,58 @@ namespace Kushk_3m3bdo.Controllers
 			return View(nameof(Index), targetProducts);
 		}
 
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> ToggleFavourite(int productId)
+		{
+			var currentUser = await GetCurrentUser();
+
+			var targetFavourite =
+				await _unitOfWork.Favorites.FindAsync(f => f.ProductId == productId && f.UserId == currentUser.Id);
+
+			if (targetFavourite == null)
+			{
+				Favourite favouriteItem = new()
+				{
+					UserId = currentUser.Id,
+					ProductId = productId,
+				};
+
+				TempData["FavouriteToggle"] = "Add To Favourites";
+
+				await _unitOfWork.Favorites.AddAsync(favouriteItem);
+			}
+			else
+			{
+				TempData["FavouriteToggle"] = "Remove From Favourites";
+				await _unitOfWork.Favorites.RemoveAsync(targetFavourite);
+			}
+
+			await _unitOfWork.SaveAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		[HttpGet]
+		[Authorize]
+		public async Task<IActionResult> GetFavourites()
+		{
+			var currentUser = await GetCurrentUser();
+
+			var favourites =
+				await _unitOfWork.Favorites.FindAllAsync(f => f.UserId == currentUser.Id, null, null, new[] { "Product" });
+
+			List<Product> products = new List<Product>();
+
+			foreach (var favourite in favourites)
+			{
+				products.Add(favourite.Product);
+			}
+
+			ViewData["ControllerFor"] = "My Favourites";
+
+			return View("Index", products);
+		}
 
 		#region DataTables API CALLS 
 		// Cancelled

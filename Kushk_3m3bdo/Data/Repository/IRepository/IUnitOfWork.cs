@@ -12,6 +12,9 @@ namespace Kushk_3m3bdo.Data.Repository.IRepository
 		IOrderHeaderRepository OrderHeaders { get; }
 		IOrderDetailRepository OrderDetails { get; }
 
+		IFavouriteRepository Favorites { get; }
+		IDebitRepository Debits { get; }
+
 		void Save();
 		Task SaveAsync();
 
