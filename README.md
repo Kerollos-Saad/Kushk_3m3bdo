@@ -52,6 +52,10 @@ providing role-based access control and safeguarding user accounts with secure p
   * NavBar
     
     ![image](https://github.com/user-attachments/assets/cc5c6942-0870-41a5-8292-f77f83acfa9f)
+
+  * User Profile
+    
+    ![image](https://github.com/user-attachments/assets/23dded9b-c7cb-4ea2-95e3-69cae8cd2798)
   
   * Products
     
