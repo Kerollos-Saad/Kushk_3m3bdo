@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Kushk_3m3bdo.Controllers
 {
-    [Authorize(Roles = "Manager,Admin")]
+    [Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 	public class UsersController : Controller
 	{
 		private readonly IApplicationUserRepository _userRepository;
@@ -21,7 +21,6 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> IndexWithoutSort()
 		{
 			var users = await _userRepository.GetUsers();
@@ -29,7 +28,6 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[HttpGet]
-		[Authorize(Roles = Roles.Role_Manager + "," + Roles.Role_Admin)]
 		public async Task<IActionResult> Index(string sortOrder)
 		{
 			var users = await _userRepository.GetUsersWithRolesAndWallet();
@@ -95,7 +93,7 @@ namespace Kushk_3m3bdo.Controllers
 			return View(viewModel);
 		}
 
-		[Authorize(Roles = "Manager")]
+		[Authorize(Roles = Roles.Role_Manager)]
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> ManageRoles(UserRolesViewModel model)
@@ -122,6 +120,7 @@ namespace Kushk_3m3bdo.Controllers
 				
 			}
 
+			TempData["success"] = "User Role Updated Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index));
 		}
 	}
