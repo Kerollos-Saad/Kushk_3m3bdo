@@ -1,10 +1,11 @@
 # Kushk 3m 3bdo
 
 Developed a comprehensive, feature-rich e-commerce application using ASP.NET Core 8 following the MVC architectural pattern, 
-with a focus on performance, scalability, security, user-friendly interface with seamless navigation, advanced search functionality, and
-an immersive product browsing experience.
-Implemented robust authentication and authorization using ASP.NET Core Identity, 
-providing role-based access control and safeguarding user accounts with secure password management, multi-factor authentication, and token-based security mechanisms.
+focusing on performance, scalability, security, and a user-friendly interface with seamless navigation, advanced search functionality, and an immersive product browsing experience. 
+Implemented robust authentication and authorization using ASP.NET Core Identity, providing role-based access control, 
+secure password management, multi-factor authentication, and token-based security mechanisms. 
+
+The system supports both user-driven online orders and admin-processed local orders, allowing administrators to manage orders on behalf of local customers while maintaining real-time synchronization with the central database.
 
 # Technologies used 
 * Front-End:
