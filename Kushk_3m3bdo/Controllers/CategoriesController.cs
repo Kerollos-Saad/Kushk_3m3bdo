@@ -61,6 +61,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (!UniqueName)
 			{
 				ModelState.AddModelError("RedundantName", "Category is Already Exist!");
+				TempData["error"] = "Category is Already Exist!"; // toastr Notification
 				return View("Add", newCategory);
 			}
 
@@ -78,6 +79,7 @@ namespace Kushk_3m3bdo.Controllers
 			await _unitOfWork.Categories.AddAsync(newCategory);
 			await _unitOfWork.SaveAsync();
 
+			TempData["success"] = "Add Category Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -86,7 +88,7 @@ namespace Kushk_3m3bdo.Controllers
 		{
 			await _unitOfWork.Categories.RemoveByIdAsync(categoryId);
 			await _unitOfWork.SaveAsync();
-
+			TempData["delete"] = "Remove Category Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -108,6 +110,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (oldCategory == null)
 			{
 				ModelState.AddModelError("NotFound", "Category not found.");
+				TempData["error"] = "Category not found."; // toastr Notification
 				return View(newCategory);
 			}
 
@@ -128,6 +131,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (oldCategory.Name == newCategory.Name && oldCategory.Logo == newCategory.Logo)
 			{
 				ModelState.AddModelError("NoChanges", "No Changes on Category!");
+				TempData["error"] = "No Changes on Category!"; // toastr Notification
 				return View(newCategory);
 			}
 
@@ -138,13 +142,14 @@ namespace Kushk_3m3bdo.Controllers
 				if (!UniqueName)
 				{
 					ModelState.AddModelError("RedundantName", "Category is Already Exist!");
+					TempData["error"] = "Category is Already Exist!"; // toastr Notification
 					return View(newCategory);
 				}
 			}
 
 			await _unitOfWork.Categories.Update(newCategory);
 			await _unitOfWork.SaveAsync();
-
+			TempData["update"] = "Updated Category Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index));
 		}
 
