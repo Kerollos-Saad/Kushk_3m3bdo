@@ -35,7 +35,6 @@ namespace Kushk_3m3bdo.Data
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Wallet> Wallets { get; set; }
-		public DbSet<UserPurchase> UserPurchases { get; set; }
 
 		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 		public DbSet<OrderHeader> OrderHeaders { get; set; }

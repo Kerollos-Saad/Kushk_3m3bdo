@@ -6,7 +6,6 @@ namespace Kushk_3m3bdo.Data.Repository.IRepository
 	{
 		ICategoryRepository Categories { get; }
 		IProductRepository Products { get; }
-		IUserPurchaseRepository Purchases { get; }
 		IWalletRepository Wallets { get; }
 		IShoppingCartRepository ShoppingCarts { get; }
 		IOrderHeaderRepository OrderHeaders { get; }

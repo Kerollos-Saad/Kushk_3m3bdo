@@ -22,8 +22,5 @@ namespace Kushk_3m3bdo.Models
 		public int? WalletId { get; set; }
 
 		public virtual Wallet? Wallet { get; set; }
-
-		public virtual IEnumerable<UserPurchase>? UserPurchases { get; set; }
-
 	}
 }
