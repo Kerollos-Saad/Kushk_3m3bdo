@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Kushk_3m3bdo.Data.Repository;
 using Stripe;
 using Stripe.Climate;
+using Humanizer;
 
 namespace Kushk_3m3bdo.Controllers
 {
@@ -35,7 +36,7 @@ namespace Kushk_3m3bdo.Controllers
 		}
 
 		[Authorize]
-		public IActionResult Index()
+		public IActionResult Index() // User Need To Show his Orders
 		{
 			return View();
 		}
@@ -141,6 +142,7 @@ namespace Kushk_3m3bdo.Controllers
 			return RedirectToAction(nameof(Details), new { orderId = OrderViewModel.OrderHeader.Id });
 		}
 
+		// User Need To Show his Orders
 		#region DATATABLES 
 
 		[HttpGet]

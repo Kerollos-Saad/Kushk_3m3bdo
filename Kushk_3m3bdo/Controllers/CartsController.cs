@@ -278,6 +278,7 @@ namespace Kushk_3m3bdo.Controllers
 					{
 						// Enough Wallet Amount For This Purchases
 						walletUser.Amount -= ShoppingCartsViewModel.OrderHeader.OrderTotal;
+						walletUser.NumberOfPurchases += ShoppingCartsViewModel.ShoppingCartList.Count();
 
 						await _unitOfWork.OrderHeaders.UpdateStatus(ShoppingCartsViewModel.OrderHeader.Id,
 							OrderStatus.StatusApproved, PaymentStatus.PaymentStatusApproved);

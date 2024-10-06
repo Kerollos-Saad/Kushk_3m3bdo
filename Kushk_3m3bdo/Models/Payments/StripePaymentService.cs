@@ -12,7 +12,7 @@ namespace Kushk_3m3bdo.Models.Payments
 	public class StripePaymentService : IStripePaymentService
 	{
 		private readonly IHttpContextAccessor _httpContextAccessor;
-		public StripePaymentService( IHttpContextAccessor httpContextAccessor)
+		public StripePaymentService(IHttpContextAccessor httpContextAccessor)
 		{
 			_httpContextAccessor = httpContextAccessor;
 		}
@@ -22,7 +22,7 @@ namespace Kushk_3m3bdo.Models.Payments
 		{
 			var options = new SessionCreateOptions
 			{
-				SuccessUrl = _domain + $"payments/CheckoutSuccess?planId={plan.Id}&sessionId="+"{CHECKOUT_SESSION_ID}",
+				SuccessUrl = _domain + $"payments/CheckoutSuccess?planId={plan.Id}&sessionId=" + "{CHECKOUT_SESSION_ID}",
 				CancelUrl = _domain + $"wallets/index",
 				LineItems = new List<SessionLineItemOptions>(),
 				Mode = "payment"
@@ -37,8 +37,8 @@ namespace Kushk_3m3bdo.Models.Payments
 					ProductData = new SessionLineItemPriceDataProductDataOptions
 					{
 						Name = plan.Name,
-						Description = String.Join(",\n",plan.Options),
-						Images = new List<string>() {plan.ImgSrc}
+						Description = String.Join(",\n", plan.Options),
+						Images = new List<string>() { plan.ImgSrc }
 					}
 				},
 				Quantity = 1
@@ -57,7 +57,7 @@ namespace Kushk_3m3bdo.Models.Payments
 			var options = new SessionCreateOptions
 			{
 				SuccessUrl = _domain + $"payments/CheckoutSuccessAdministration?planId={plan.Id}&walletId={walletId}",
-				CancelUrl = _domain + $"wallets/index",
+				CancelUrl = _domain + $"wallets/walletx?walletId={walletId}",
 				LineItems = new List<SessionLineItemOptions>(),
 				Mode = "payment"
 			};
@@ -112,7 +112,7 @@ namespace Kushk_3m3bdo.Models.Payments
 				{
 					PriceData = new SessionLineItemPriceDataOptions
 					{
-						UnitAmount = (long)((item.Product.Price * (decimal)(1-(item.Product.Discount/100))) * 100),
+						UnitAmount = (long)((item.Product.Price * (decimal)(1 - (item.Product.Discount / 100))) * 100),
 						Currency = "USD",
 						ProductData = new SessionLineItemPriceDataProductDataOptions
 						{
@@ -132,6 +132,6 @@ namespace Kushk_3m3bdo.Models.Payments
 			return session;
 		}
 
-		
+
 	}
 }
