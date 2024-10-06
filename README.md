@@ -26,6 +26,7 @@ The system supports both user-driven online orders and admin-processed local ord
   * Dependency injection 
 
 * Identity
+* Stripe Payment
   
 # architecture
   * n-tier architecture
