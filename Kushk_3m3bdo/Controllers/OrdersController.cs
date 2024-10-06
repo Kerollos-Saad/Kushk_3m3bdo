@@ -153,13 +153,13 @@ namespace Kushk_3m3bdo.Controllers
 			if (User.IsInRole(Roles.Role_Manager) || User.IsInRole(Roles.Role_Admin))
 			{
 				objOrderHeaders =
-					await _unitOfWork.OrderHeaders.FindAllAsync(includeProperties: new[] { "ApplicationUser" });
+					await _unitOfWork.OrderHeaders.FindAllAsync(includeProperties: new[] { "ApplicationUser", "SalesApplicationUser" });
 			}
 			else
 			{
 				var currentUser = await GetCurrentUser();
 				objOrderHeaders = await _unitOfWork.OrderHeaders.FindAllAsync(
-					h => h.ApplicationUserId == currentUser.Id, null, null, new[] { "ApplicationUser" });
+					h => h.ApplicationUserId == currentUser.Id, null, null, new[] { "ApplicationUser", "SalesApplicationUser" });
 			}
 
 			switch (status)
