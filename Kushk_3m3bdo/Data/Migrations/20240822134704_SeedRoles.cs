@@ -28,6 +28,13 @@ namespace Kushk_3m3bdo.Data.Migrations
 		        table: "Roles",
 		        schema: "security",
 		        columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
+		        values: new Object[] { Guid.NewGuid().ToString(), "SubAdmin", "SubAdmin".ToUpper(), Guid.NewGuid().ToString() }
+	        );
+
+			migrationBuilder.InsertData(
+		        table: "Roles",
+		        schema: "security",
+		        columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
 		        values: new Object[] { Guid.NewGuid().ToString(), "Manager", "Manager".ToUpper(), Guid.NewGuid().ToString() }
 	        );
 		}

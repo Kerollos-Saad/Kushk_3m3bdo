@@ -27,10 +27,13 @@ namespace Kushk_3m3bdo.Controllers
 			var Products = await _unitOfWork.Products.GetAllAsync();
 			foreach (Product product in Products)
 			{
-				if (ProductNumPerCategory.ContainsKey((int)product.CategoryId))
-					ProductNumPerCategory[(int)product.CategoryId] += 1;
-				else
-					ProductNumPerCategory[(int)product.CategoryId] = 1;
+				if (product.CategoryId != null)
+				{
+					if (ProductNumPerCategory.ContainsKey((int)product.CategoryId))
+						ProductNumPerCategory[(int)product.CategoryId] += 1;
+					else
+						ProductNumPerCategory[(int)product.CategoryId] = 1;
+				}
 			}
 
 			return ProductNumPerCategory;

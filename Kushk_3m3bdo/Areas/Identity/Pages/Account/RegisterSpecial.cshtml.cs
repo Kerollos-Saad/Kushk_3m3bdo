@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Kushk_3m3bdo.Models;
+using Kushk_3m3bdo.Models.Consts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -177,6 +178,8 @@ namespace Kushk_3m3bdo.Areas.Identity.Pages.Account
 				if (result.Succeeded)
 				{
 					_logger.LogInformation("User created a new account with password.");
+
+					await _userManager.AddToRoleAsync(user, Roles.Role_User);
 
 					var userId = await _userManager.GetUserIdAsync(user);
 					var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

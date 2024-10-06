@@ -40,8 +40,17 @@
 
 						<div class="col-12 col-md-6 pb-4">
 							<h6 class="text-dark text-opacity-50 ">
+								
+								@{
+									string categoryName = "Not Assign to Category";
+									if (@Model.Product.Category != null)
+									{
+										categoryName = @Model.Product.Category.Name.ToUpper();
+									}
+								}
+								
 								<b>Category:</b>
-								<span class="halftab">@Model.Product.Category.Name.ToUpper()</span>
+								<span class="halftab">@categoryName</span>
 							</h6>
 						</div>
 
