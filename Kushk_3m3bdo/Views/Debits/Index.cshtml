@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Debit>
+
+@{
+	ViewData["Title"] = "DebitRequests";
+}
+
+<h1>Debit Requests</h1>
+
+<table class="table align-middle mb-0 bg-white mt-4">
+	<thead class="bg-light">
+		<tr>
+			<th>Name</th>
+			<th>Purchases</th>
+			<th>Status</th>
+			<th>Amount</th>
+			<th>Score</th>
+			<th class="text-center">Debit Amount</th>
+			<th class="text-center">Request Date</th>
+			<th class="text-center">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		@foreach (var Debit in Model)
+		{
+			<tr>
+				<td>
+					<div class="d-flex align-items-center">
+						@{
+							string UserProfilePic = @Debit.User.ProfilePic != null
+							? $"data:image/*;base64,{Convert.ToBase64String(@Debit.User.ProfilePic)}"
+							: Url.Content("~/images/Default_img.png");
+						}
+						<img src="@UserProfilePic"
+							 alt=""
+							 style="width: 45px; height: 45px"
+							 class="rounded-circle avatar" />
+						<div class="ms-3">
+							<p class="fw-bold mb-1">@(Debit.User.FirstName + " " + Debit.User.LastName)</p>
+							<p class="text-muted mb-0">@Debit.User.Email</p>
+						</div>
+					</div>
+				</td>
+
+				<td>
+					<p class="fw-normal mb-1">Number: <b>@Debit.Wallet.NumberOfPurchases</b> </p>
+					<p class="text-muted mb-0">Amount: <b>@Debit.Wallet.PriceOfPurchases</b> </p>
+				</td>
+
+				<td>
+					@{
+						if (@Debit.Status == DebitStatus.DebitStatusProcessing)
+						{
+							<span class="badge bg-secondary rounded-pill d-inline">Processing</span>
+						}
+						else
+						{
+							if (@Debit.Status == DebitStatus.DebitStatusApproved)
+							{
+								<span class="badge bg-success rounded-pill d-inline">Approved</span>
+							}
+							else
+							{
+								<span class="badge bg-danger rounded-pill d-inline">Denied</span>
+							}
+						}
+					}
+				</td>
+				<td>
+					<p class="fw-bold mb-1">$ @Debit.Wallet.Amount</p>
+				</td>
+				<td><b>@Debit.Wallet.Score</b> Points</td>
+				<td class="text-center">
+					@Debit.Amount
+				</td>
+				<td class="text-center">
+					@Debit.RequestDateTime.ToShortDateString()
+				</td>
+				<td class="text-center">
+					@{
+						if (@Debit.Status == DebitStatus.DebitStatusProcessing)
+						{
+							<form >
+								<button asp-action="Accept" asp-route-id="@Debit.Id" 
+								        class="btn btn-outline-success"
+								        data-mdb-ripple-init
+								        data-mdb-ripple-color="dark">
+									 Approved
+								</button>
+								<button asp-action="Refuse" asp-route-id="@Debit.Id" 
+								        class="btn btn-outline-danger"
+										data-mdb-ripple-init
+										data-mdb-ripple-color="dark">
+									 Denied
+								</button>
+							</form>
+						}
+						else
+						{
+							if (@Debit.Status == DebitStatus.DebitStatusApproved)
+							{
+								<span class="badge bg-success d-inline h3">Approved</span>
+							}
+							else
+							{
+								<span class="badge bg-danger d-inline h3">Denied</span>
+							}
+						}
+					}
+				</td>
+
+			</tr>
+		}
+
+	</tbody>
+</table>
+
+
+@section Scripts
+{
+	<partial name="_ValidationScriptsPartial" />
+}

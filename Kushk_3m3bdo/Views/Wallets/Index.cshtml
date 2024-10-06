@@ -25,13 +25,13 @@
 
 		<div class="card-header bg-secondary bg-gradient text-light py-4">
 			<div class="row ">
-				
+
 				<div class="col-1 text-center">
 					<div class="align-items-start">
 						@{
 							string UserProfilePic = @Model.ProfilePicture != null
-								? $"data:image/*;base64,{Convert.ToBase64String(@Model.ProfilePicture)}"
-								: Url.Content("~/images/Default_img.png");
+							? $"data:image/*;base64,{Convert.ToBase64String(@Model.ProfilePicture)}"
+							: Url.Content("~/images/Default_img.png");
 						}
 						<img src="@UserProfilePic"
 							 alt="Logo"
@@ -174,23 +174,29 @@
 						}
 						else
 						{
-							if (User.Identity.Name == Model.UserName)
-							{
-								<div class="row">
-									<div class="col-12 col-md-6 pb-1">
+							<div class="row">
+								<div class="col-12 col-md-6 pb-1">
+
+									@if (User.Identity.Name == Model.UserName)
+									{
 										<a asp-controller="Payments" asp-action="Plans" class="btn btn-primary bg-gradient w-100 py-2 text-uppercase fw-bold">Charge My Wallet</a>
-									</div>
-								</div>
-							}
-							else
-							{
-								<div class="row">
-									<div class="col-12 col-md-6 pb-1">
+									}
+									else
+									{
 										<input type="hidden" name="walletId" value="@Model.WalletId" />
 										<a asp-controller="Payments" asp-action="Plans" asp-route-walletId="@Model.WalletId" class="btn btn-success bg-gradient w-100 py-2 text-uppercase fw-bold">Charge User Wallet</a>
-									</div>
+									}
 								</div>
-							}
+
+								<div class="col-12 col-md-6 pb-1">
+									<button id="request-debit" 
+									        data-action="@Url.Action("Add", "Debits", new { userId = Model.UserId, walletId = Model.WalletId })"
+									        class="btn btn-dark bg-gradient w-100 py-2 text-uppercase fw-bold">
+										Request For Debit
+									</button>
+								</div>
+
+							</div>
 
 						}
 
@@ -225,6 +231,32 @@
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
 	<partial name="_DeleteWarningPartial" />
+	
+	<script>
+		document.getElementById("request-debit").addEventListener("click", async function (event) {
+			event.preventDefault(); // Prevent the button's default behavior
+    
+			const { value: amount } = await Swal.fire({
+				title: "Input Request Amount",
+				input: "number",  // Input type for SweetAlert (can be 'number' for specific validation)
+				showCloseButton: true,
+				inputLabel: "Your amount value",
+				inputPlaceholder: "Enter your amount",
+				inputValidator: (value) => {
+					if (!value || isNaN(value) || value <= 0) {
+						return 'Please enter a valid amount!';
+					}
+				}
+			});
+
+			if (amount) {
+				// Redirect to action with amount as query parameter
+				const actionUrl = this.getAttribute("data-action");
+				window.location.href = `${actionUrl}&amount=${encodeURIComponent(amount)}`;
+			}
+		});
+
+	</script>
 
 	<script type="text/javascript">
 		var pathToDelete;

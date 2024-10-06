@@ -12,10 +12,10 @@ namespace Kushk_3m3bdo.Models
 		public DateTime RequestDateTime { get; set; } = DateTime.UtcNow;
 		public DateTime ResponseDateTime { get; set; }
 
-		public bool Accepted { get; set; } = false;
+		public string? Status { get; set; }
 
 		public string UserId { get; set; }
-		public string AdminId { get; set; }
+		public string? AdminId { get; set; }
 		public int WalletId { get; set; }
 
 		[ForeignKey("UserId")]
@@ -24,7 +24,7 @@ namespace Kushk_3m3bdo.Models
 
 		[ForeignKey("AdminId")]
 		[ValidateNever]
-		public virtual ApplicationUser AdminUser { get; set; }
+		public virtual ApplicationUser? AdminUser { get; set; }
 
 		[ForeignKey("WalletId")]
 		[ValidateNever]

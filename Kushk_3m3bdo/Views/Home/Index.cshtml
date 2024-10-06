@@ -1,15 +1,60 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-	<p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    
+	@*     <h1 class="display-4">Welcome</h1>
+	<p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
+
+	<div style="width: 100vw; margin-left: calc(-50vw + 50%)">
+		<header class="hero-section mb-5" style="background-image: url('@Url.Content("~/images/banner-2.jpg")');
+		                                         background-repeat: no-repeat;
+		                                         background-position: center;
+		                                         background-size: cover;
+		                                         position: relative;
+		                                         height: 90vh;
+		                                         display: flex;
+		                                         justify-content: center;
+		                                         align-items: center;
+		                                         text-align: center;">
+
+			<div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4);"></div>
+
+			<div class="content" style="position: relative; color: white; z-index: 1;">
+				<h1 style="font-size: 4rem; font-weight: 700;">Welcome to Kusk 3m 3bdo</h1>
+				<p style="font-size: 1.5rem; margin: 20px 0;">Everything You Need In One Place.</p>
+			</div>
+			
+			<!-- Features Section from the Image -->
+			<div style="display: flex; justify-content: center; align-items: center; width: 100vw; margin-left: calc(-50vw + 50%);">
+				<div style="background-color: #65a844; width: 33.33%; text-align: center; padding: 20px 10px; color: white;">
+					<i class="fas fa-sync-alt" style="font-size: 2rem;"></i>
+					<h3 style="font-weight: bold; margin: 10px 0;">Fresh from Farm</h3>
+					<p>Fresh Products Every Day.</p>
+				</div>
+
+				<div style="background-color: #3b4a34; width: 33.33%; text-align: center; padding: 20px 10px; color: white;">
+					<i class="fas fa-leaf" style="font-size: 2rem;"></i>
+					<h3 style="font-weight: bold; margin: 10px 0;">100% Variety</h3>
+					<p>We Offer 500+ Products.</p>
+				</div>
+
+				<div style="background-color: #f96d02; width: 33.33%; text-align: center; padding: 20px 10px; color: white;">
+					<i class="fas fa-truck" style="font-size: 2rem;"></i>
+					<h3 style="font-weight: bold; margin: 10px 0;">Free Delivery</h3>
+					<p>We Offer Free Delivery For Your First Order.</p>
+				</div>
+			</div>
+
+		</header>
+
+	</div>
+
+
 	@* 	<div>
-		<iframe src="@Url.Action("Pagination", "Categories")" width="100%" height="1200px"></iframe>
+	<iframe src="@Url.Action("Pagination", "Categories")" width="100%" height="1200px"></iframe>
 	</div> *@
-	
+
 	@* Show Categories as Pagination *@
 	<div id="pagination-container"></div>
 
@@ -18,12 +63,12 @@
 @section Scripts
 {
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(document).ready(function () {
 			$.ajax({
 				url: '@Url.Action("Pagination", "Categories")',
-				success: function(result) {
+				success: function (result) {
 					var htmlContent = $(result).find("#pagination-content").html();
-					
+
 					$("#pagination-container").html(htmlContent);
 
 					console.log(htmlContent);
@@ -33,7 +78,7 @@
 					scripts.each(function () {
 						$.globalEval(this.text); // Dynamically run each script
 					});
-					
+
 				}
 			});
 		});
