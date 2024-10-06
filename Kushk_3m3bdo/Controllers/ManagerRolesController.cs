@@ -46,6 +46,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (roleIsExits)
 			{
 				ModelState.AddModelError("Name", "Role is Exist!");
+				TempData["error"] = "Role is Exist!"; // toastr Notification
 				return View("Index", _roleRepository.GetRoles().Result);
 			}
 
@@ -54,6 +55,7 @@ namespace Kushk_3m3bdo.Controllers
 
 			if (isSucceeded)
 			{
+				TempData["success"] = "Role Added Successfully"; // toastr Notification
 				return RedirectToAction(nameof(Index));
 			}
 			else
@@ -73,11 +75,13 @@ namespace Kushk_3m3bdo.Controllers
 
 			if (isSucceeded)
 			{
+				TempData["delete"] = "Remove Role Successfully"; // toastr Notification
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
 				ModelState.AddModelError("Name", "Failed To Delete!");
+				TempData["error"] = "Failed To Delete!"; // toastr Notification
 				return View("Index", _roleRepository.GetRoles().Result);
 			}
 
