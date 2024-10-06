@@ -34,7 +34,7 @@ providing role-based access control and safeguarding user accounts with secure p
   * toastr
 
 # DataBase
-(![Kushk 3m 3bdo Database](https://github.com/user-attachments/assets/535c9619-84ee-4299-b65d-389f95a18264))
+![Kushk 3m 3bdo Database](https://github.com/user-attachments/assets/535c9619-84ee-4299-b65d-389f95a18264)
 
 # Project Screens
   * HomePage
