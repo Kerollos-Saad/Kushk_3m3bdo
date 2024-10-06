@@ -69,6 +69,7 @@ namespace Kushk_3m3bdo.Controllers
 					if (oldProduct != null)
 					{
 						ModelState.AddModelError("RedundantProduct", "Product UPC is Already Exist!");
+						TempData["error"] = "Product UPC is Already Exist!";
 						return View("Add", newProduct);
 					}
 				}
@@ -85,10 +86,12 @@ namespace Kushk_3m3bdo.Controllers
 
 				await _unitOfWork.Products.AddAsync(newProduct);
 				await _unitOfWork.SaveAsync();
+				TempData["success"] = "Adding New Product Successfully!";
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
+				TempData["error"] = "Error While Adding New Product!";
 				return View("Add", newProduct);
 			}
 
@@ -119,6 +122,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (product.IsDeleted)
 			{
 				TempData["ProductError"] = "This Product Was Deleted!";
+				TempData["error"] = "This Product Was Deleted!"; // toastr Notification
 				return RedirectToAction(nameof(Details), routeValues: shoppingCart.ProductId);
 			}
 
@@ -148,7 +152,7 @@ namespace Kushk_3m3bdo.Controllers
 			}
 
 			await _unitOfWork.SaveAsync();
-
+			TempData["update"] = "Updating Product Successfully";
 			return RedirectToAction(nameof(Index), "Carts");
 		}
 
@@ -161,6 +165,7 @@ namespace Kushk_3m3bdo.Controllers
 			if (product.IsDeleted)
 			{
 				TempData["ProductError"] = "Can't Buy Deleted Products!";
+				TempData["error"] = "Can't Buy Removed Products!"; // toastr Notification
 				return RedirectToAction(nameof(RemovedProducts));
 			}
 
@@ -196,7 +201,7 @@ namespace Kushk_3m3bdo.Controllers
 			}
 
 			await _unitOfWork.SaveAsync();
-
+			TempData["success"] = "Added To Cart Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index), "Carts");
 
 		}
@@ -248,6 +253,7 @@ namespace Kushk_3m3bdo.Controllers
 				oldProduct.ProductImg == newProduct.ProductImg)
 			{
 				ModelState.AddModelError("NoChanges", "No Changes on Product!");
+				TempData["error"] = "No Changes on Product To Update"; // toastr Notification
 				return View(newProduct);
 			}
 
@@ -259,6 +265,7 @@ namespace Kushk_3m3bdo.Controllers
 				if (uniqueUPC != null)
 				{
 					ModelState.AddModelError("RedundantUPC", "UPC Number is Already Exist!");
+					TempData["error"] = "UPC Number is Already Exist"; // toastr Notification
 					return View(newProduct);
 				}
 			}
@@ -266,6 +273,7 @@ namespace Kushk_3m3bdo.Controllers
 			await _unitOfWork.Products.Update(newProduct);
 			await _unitOfWork.SaveAsync();
 
+			TempData["success"] = "Update Product Successfully"; // toastr Notification
 			return RedirectToAction(nameof(Index));
 		}
 
@@ -296,10 +304,12 @@ namespace Kushk_3m3bdo.Controllers
 			{
 				targetProduct.IsDeleted = true;
 				await _unitOfWork.SaveAsync();
+				TempData["delete"] = "Removed a Product Successfully"; // toastr Notification
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
+				TempData["error"] = "There is An Error Occurring While Remove This Product"; // toastr Notification
 				return NotFound();
 			}
 		}
@@ -313,10 +323,12 @@ namespace Kushk_3m3bdo.Controllers
 			{
 				targetProduct.IsDeleted = false;
 				await _unitOfWork.SaveAsync();
+				TempData["success"] = "ReBack This Product Successfully"; // toastr Notification
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
+				TempData["error"] = "There is An Error Occurring While ReBack This Product"; // toastr Notification
 				return NotFound();
 			}
 		}
@@ -381,6 +393,7 @@ namespace Kushk_3m3bdo.Controllers
 			return View("Index", products);
 		}
 
+		// Didn't Used
 		#region DataTables API CALLS 
 		// Cancelled
 		[HttpGet]
