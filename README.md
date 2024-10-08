@@ -89,7 +89,7 @@ The system supports both user-driven online orders and admin-processed local ord
       
   * Manage WAllets
     
-    ![image](https://github.com/user-attachments/assets/73acbb01-7815-48ae-8b64-aefc7bb071bf)
+    ![image](https://github.com/user-attachments/assets/eaf158c9-9a14-4e50-af82-db5deb415521)
 
   * Vouchers {Subscription Plans}
 
@@ -117,7 +117,7 @@ The system supports both user-driven online orders and admin-processed local ord
     
   * Orders
 
-    ![image](https://github.com/user-attachments/assets/fc7b2978-8921-47a9-bad4-4b7e8919e326)
+    ![image](https://github.com/user-attachments/assets/41ad363b-f75a-4c9b-b1ff-bdaabc7427b9)
 
   * Order Details
 
@@ -125,7 +125,8 @@ The system supports both user-driven online orders and admin-processed local ord
 
   * Debits
 
-    ![image](https://github.com/user-attachments/assets/f4de11a0-29ca-4bb1-b312-ffd0cdf93915)
+    ![image](https://github.com/user-attachments/assets/3f981b99-7e45-4dd5-8015-e9176d1a8515)
+
 
     
 
