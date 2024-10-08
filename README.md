@@ -127,6 +127,14 @@ The system supports both user-driven online orders and admin-processed local ord
 
     ![image](https://github.com/user-attachments/assets/3f981b99-7e45-4dd5-8015-e9176d1a8515)
 
+  * Stripe CheckOut
+
+    ![image](https://github.com/user-attachments/assets/452528fe-a75d-44ba-807c-c987525ec6d2)
+
+  * Stripe Subscription plan
+
+    ![image](https://github.com/user-attachments/assets/9bef3a8a-e238-4213-9379-5360188456c5)
+
 
     
 
