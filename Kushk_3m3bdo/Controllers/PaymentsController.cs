@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Security.Claims;
 using Kushk_3m3bdo.Data.Repository.IRepository;
 using Kushk_3m3bdo.Models;
+using Kushk_3m3bdo.Models.Consts;
 using Kushk_3m3bdo.Models.Payments;
 using Kushk_3m3bdo.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -219,7 +220,11 @@ namespace Kushk_3m3bdo.Controllers
 
 			SubscriptionPlan.RemovePlan(userPlan);
 
-			return RedirectToAction("WalletX", "Wallets", new { walletId = wallet.Id });
+			if (User.IsInRole(Roles.Role_Manager) || User.IsInRole(Roles.Role_Admin) ||
+			    User.IsInRole(Roles.Role_SubAdmin))
+				return RedirectToAction("WalletX", "Wallets", new { walletId = wallet.Id });
+			else
+				return RedirectToAction("Index", "Wallets");
 		}
 
 		[HttpGet]
