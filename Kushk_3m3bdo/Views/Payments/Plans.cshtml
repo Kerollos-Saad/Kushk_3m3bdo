@@ -21,6 +21,7 @@
 		// Guest So he's Didn't Have Wallet
 		var controllerName = "Users";
 		var actionName = "Index";
+		var method = "get";
 		if (ViewBag.IsUser)
 		{
 			if (ViewBag.HaveWallet)
@@ -28,6 +29,7 @@
 				// User Have Wallet
 				controllerName = "Payments";
 				actionName = "PlanPayment";
+				method = "post";
 			}
 			else
 			{
@@ -85,7 +87,7 @@
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 							@* <a asp-controller="Payment" asp-action="PlanPayment" asp-route-PlanId="1" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller=@controllerName asp-action=@actionName method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="@method">
 								<input type="hidden" name="planId" value="@Model[0].Id" />
 								<input type="hidden" name="walletId" value="@ViewBag.WalletId" />
 								<div class="d-grid gap-2">
@@ -143,7 +145,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-primary">Choose Plan</a> *@
 
-							<form asp-controller=@controllerName asp-action=@actionName method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="@method">
 								<input type="hidden" name="planId" value="@Model[1].Id" />
 								<input type="hidden" name="walletId" value="@ViewBag.WalletId" />
 								<div class="d-grid gap-2">
@@ -200,7 +202,7 @@
 						<div class="d-grid gap-2 my-4">
 							@* <a href="#!" class="btn btn-lg btn-outline-primary">Choose Plan</a> *@
 
-							<form asp-controller=@controllerName asp-action=@actionName method="post">
+							<form asp-controller=@controllerName asp-action=@actionName method="@method">
 								<input type="hidden" name="planId" value="@Model[2].Id" />
 								<input type="hidden" name="walletId" value="@ViewBag.WalletId" />
 								<div class="d-grid gap-2">
@@ -248,7 +250,9 @@
 				var walletId = '@(ViewBag.WalletId != null ? ViewBag.WalletId.ToString() : "")';
 				var url = '@Url.Action("SpecialPlanPayment", "Payments")' + '?priceAmount=' + price + (walletId ? '&walletId=' + walletId : '');
 
-				window.location.href = url;
+				if (ViewBag.IsUser) {
+					window.location.href = url;
+				} 
 
 				//window.location.href = '@Url.Action("SpecialPlanPayment","Payments",new { walletId = @ViewBag.WalletId})' + '&priceAmount=' + price;
 			}
